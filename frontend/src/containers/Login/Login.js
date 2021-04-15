@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -25,10 +27,12 @@ export default function Login() {
     <div className="Login">
       <Container>
         <Row className="py-5 justify-content-center">
-          {/* logo goes here */}
+          {/* TODO: Replace this garbage with an actual logo if we get around to making one */}
+          <h1 className="display-4 logo-text " >Courrier</h1>
+          <h1 className="display-4 logo-text bg-primary text-white">App</h1>
         </Row>
         <Row className="justify-content-center">
-          <Col sm="6" md="6" lg="5" xl="4">
+          <Col sm="8" md="6" lg="5" xl="4">
             <h4>Login</h4>
             <Form noValidate validated={validated} onSubmit={handleSubmit} >
               <Form.Group size="lg" controlId="email">
@@ -60,6 +64,9 @@ export default function Login() {
               Login
               </Button>
             </Form>
+            <div className="caption">
+              Don&apos;t have an account yet?&nbsp;<Link to="/register">Click here to register</Link>
+            </div>
           </Col>
         </Row>
       </Container>
