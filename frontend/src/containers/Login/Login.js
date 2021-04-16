@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { login } from '../../actions'
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -8,19 +10,20 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './Login.css';
 
-export default function Login() {
+function Login(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [validated, setValidated] = useState(false);
 
-
   function handleSubmit(event) {
     event.preventDefault();
+    setValidated(true)
     if (event.currentTarget.checkValidity() === false) { // event.currentTarget = form
       event.stopPropagation();
+      return;
     }
-    setValidated(true);
-    console.log(email, password)
+    // eslint-disable-next-line react/prop-types
+    props.dispatch(login({ email, password }))
   }
 
   return (
@@ -73,3 +76,5 @@ export default function Login() {
     </div>
   );
 }
+
+export default connect()(Login)
