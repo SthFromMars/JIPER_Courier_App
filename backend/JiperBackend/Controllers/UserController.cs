@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Cors;
 using Newtonsoft.Json.Linq;
 using JiperBackend.Services;
 using JiperBackend.Models;
@@ -28,11 +27,7 @@ namespace JiperBackend.Controllers
                 string firstName = data["firstName"].ToObject<string>();
                 string lastName = data["lastName"].ToObject<string>();
                 string phoneNumber = data["phoneNumber"].ToObject<string>();
-                string city = data["city"].ToObject<string>();
-                string street = data["street"].ToObject<string>();
-                string houseNr = data["houseNr"].ToObject<string>();
-                string zipCode = data["zipCode"].ToObject<string>();
-                Address address = new Address(city, street, houseNr, zipCode);
+                Address address = data["address"].ToObject<Address>();
                 user = new User(email, password, firstName, lastName, phoneNumber, address);
             }
             catch (NullReferenceException e)
