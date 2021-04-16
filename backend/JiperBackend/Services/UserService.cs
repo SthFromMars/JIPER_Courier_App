@@ -3,14 +3,14 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
-namespace JiperBackend.DAL
+namespace JiperBackend.Services
 {
-    public class DataLoader
+    public class UserService
     {
         public DbSet<User> users;
         public readonly Context db;
 
-        public DataLoader(Context db)
+        public UserService(Context db)
         {
             this.db = db;
             users = db.Users;

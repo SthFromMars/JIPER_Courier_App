@@ -1,7 +1,7 @@
 using JiperBackend.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace JiperBackend.DAL
+namespace JiperBackend.Services
 {
     public class Context : DbContext
     {
