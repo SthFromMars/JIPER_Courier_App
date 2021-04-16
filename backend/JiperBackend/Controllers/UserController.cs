@@ -8,13 +8,12 @@ namespace JiperBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [EnableCors("ReactPolicy")]
     public class UserController : ControllerBase
     {
-        private readonly UserService dataLoader;
+        private readonly UserService userService;
         public UserController(UserService dataLoader)
         {
-            this.dataLoader = dataLoader;
+            this.userService = dataLoader;
         }
 
         [HttpPost("register")]
@@ -25,13 +24,9 @@ namespace JiperBackend.Controllers
             string firstName = data["firstName"].ToObject<string>();
             string lastName = data["lastName"].ToObject<string>();
             string phoneNumber = data["phoneNumber"].ToObject<string>();
-            string city = data["city"].ToObject<string>();
-            string street = data["street"].ToObject<string>();
-            string houseNr = data["houseNr"].ToObject<string>();
-            string zipCode = data["zipCode"].ToObject<string>();
-            Address address = new Address(city, street, houseNr, zipCode);
+            Address address = data["address"].ToObject<Address>();
             User user = new User(email, password, firstName, lastName, phoneNumber, address);
-            dataLoader.AddUser(user);
+            userService.AddUser(user);
             return user;
         }
     }
