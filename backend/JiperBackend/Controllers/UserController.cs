@@ -17,7 +17,7 @@ namespace JiperBackend.Controllers
         }
 
         [HttpPost("register")]
-        public ActionResult Add([FromBody] JObject data)
+        public IActionResult Add([FromBody] JObject data)
         {
             User user;
             try
