@@ -22,5 +22,8 @@ namespace JiperBackend.Models
             PhoneNumber = phoneNumber;
             Address = address;
         }
+        public User()
+        {
+        }
     }
 }
