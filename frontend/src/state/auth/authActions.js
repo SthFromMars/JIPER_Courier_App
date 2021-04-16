@@ -1,11 +1,11 @@
 import { SET_USER_DATA } from './authTypes'
 import { setError } from '../error/errorActions'
-import axios from 'axios'
+import axios from 'axios' // TODO replace with the import with configured axios object
 
 export function login(payload) {
   return async dispatch => {
     try {
-      const res = await axios.post('', payload);
+      const res = await axios.post('/login', payload);
       dispatch({ type: SET_USER_DATA, payload: res });
       return res;
     } catch (error) {
