@@ -1,17 +1,16 @@
-import { SET_USER_DATA } from './authTypes'
+import { SET_ERROR } from './errorTypes'
 
 const initialState = {
-  loggedIn: false,
-  loading: false,
-  user: {}
+  error: false,
+  message: ''
 }
 
 export default function authReducer(state = initialState, action) {
   switch(action.type) {
-  case SET_USER_DATA:
+  case SET_ERROR:
     return {
-      loggedIn: true,
-      user: action.payload
+      error: action.payload.error,
+      message: action.payload.message || '',
     }
   default:
     return state

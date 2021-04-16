@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { login } from '../../actions'
+import { login } from '../../state/auth/authActions'
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -30,7 +30,7 @@ function Login(props) {
     <div className="Login">
       <Container>
         <Row className="py-5 justify-content-center">
-          {/* TODO: Replace this garbage with an actual logo if we get around to making one */}
+          {/* TODO: Replace this with an actual logo if we get around to making one */}
           <h1 className="display-4 logo-text " >Courrier</h1>
           <h1 className="display-4 logo-text bg-primary text-white">App</h1>
         </Row>
