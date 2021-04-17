@@ -23,7 +23,15 @@ namespace JiperBackend.Controllers
         {
             if (string.IsNullOrWhiteSpace(name))
                 return BadRequest();
-            CourierCompany courierCompany = courierCompanyService.GetCourierCompany(name);
+            CourierCompany courierCompany;
+            try
+            {
+                courierCompany = courierCompanyService.GetCourierCompany(name);
+            }
+            catch(InvalidOperationException e)
+            { 
+                return BadRequest();
+            }
             return Ok(courierCompany);
         }
     }
