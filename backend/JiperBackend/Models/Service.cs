@@ -16,7 +16,7 @@ namespace JiperBackend.Models
         public Service(string name, double price)
         {
             Name = name;
-            Price = Price;
+            Price = price;
         }
     }
 }

@@ -20,7 +20,7 @@ namespace JiperBackend.Models
         public Package(string name, double price, double weight, int length, int width, int height)
         {
             Name = name;
-            Price = Price;
+            Price = price;
             Weight = weight;
             Length = length;
             Width = width;
@@ -30,7 +30,7 @@ namespace JiperBackend.Models
         public Package(string name, double price, double weight)
         {
             Name = name;
-            Price = Price;
+            Price = price;
             Weight = weight;
         }
     }
