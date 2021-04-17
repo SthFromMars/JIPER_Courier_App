@@ -26,5 +26,12 @@ namespace JiperBackend.Models
             Width = width;
             Height = height;
         }
+
+        public Package(string name, double price, double weight)
+        {
+            Name = name;
+            Price = Price;
+            Weight = weight;
+        }
     }
 }

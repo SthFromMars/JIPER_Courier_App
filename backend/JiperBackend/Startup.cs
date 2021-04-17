@@ -31,6 +31,7 @@ namespace JiperBackend
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
             });
             services.AddScoped<UserService, UserService>();
+            services.AddScoped<CourierCompanyService, CourierCompanyService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

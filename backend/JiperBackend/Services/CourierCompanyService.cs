@@ -25,10 +25,9 @@ namespace JiperBackend.Services
 
         public CourierCompany GetCourierCompany(string name)
         {
-            return (from courierCompany in courierCompanies.Include(courierCompany => courierCompany.Packages).Include(courierCompany => courierCompany.Services).ToList()
+            return (from courierCompany in courierCompanies.Include(courier => courier.Packages).Include(courier => courier.Services).ToList()
                     where courierCompany.Name == name
                     select courierCompany) as CourierCompany;
         }
-
     }
 }

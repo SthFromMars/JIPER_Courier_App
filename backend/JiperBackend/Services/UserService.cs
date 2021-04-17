@@ -23,7 +23,8 @@ namespace JiperBackend.Services
 
         public void AddUser(User user)
         {
-            if (!users.Contains(user)) users.Add(user);
+            if (!users.Contains(user)) 
+                users.Add(user);
             SaveChanges();
         }
     }
