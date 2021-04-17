@@ -28,7 +28,7 @@ namespace JiperBackend.Controllers
             {
                 courierCompany = courierCompanyService.GetCourierCompany(name);
             }
-            catch(InvalidOperationException e)
+            catch(InvalidOperationException)
             { 
                 return BadRequest();
             }

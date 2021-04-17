@@ -30,7 +30,7 @@ namespace JiperBackend.Controllers
                 Address address = data["address"].ToObject<Address>();
                 user = new User(email, password, firstName, lastName, phoneNumber, address);
             }
-            catch (NullReferenceException e)
+            catch (NullReferenceException)
             {
                 return BadRequest();
             }
