@@ -11,10 +11,12 @@ namespace JiperBackend.Services
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<CourierCompany> CourierCompanies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().ToTable("User");
+            modelBuilder.Entity<User>().ToTable("CourierCompany");
         }
     }
 }
