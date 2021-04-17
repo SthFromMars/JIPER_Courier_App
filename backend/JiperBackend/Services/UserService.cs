@@ -26,5 +26,10 @@ namespace JiperBackend.Services
             if (!users.Contains(user)) users.Add(user);
             SaveChanges();
         }
+
+        public User GetUser(string email, string password)
+        {
+            return users.Where(u => u.Email == email && u.Password == password).FirstOrDefault();
+        }
     }
 }
