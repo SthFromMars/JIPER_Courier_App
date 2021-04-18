@@ -37,5 +37,29 @@ namespace JiperBackend.Controllers
             userService.AddUser(user);
             return Ok(user);
         }
+
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] JObject data)
+        {
+            User user;
+            string email, password;
+
+            try
+            {
+                email = data["email"].ToObject<string>();
+                password = data["password"].ToObject<string>();
+                user = userService.GetUser(email, password) ?? throw new ArgumentNullException(nameof(user)); ;
+            }
+            catch (NullReferenceException)
+            {
+                return BadRequest();
+            }
+            catch (ArgumentNullException)
+            {
+                return Unauthorized();
+            }
+            
+            return Ok(user);
+        }
     }
 }
