@@ -23,10 +23,10 @@ namespace JiperBackend.Services
             db.SaveChanges();
         }
 
-        public CourierCompany GetCourierCompany(string name)
+        public CourierCompany GetCourierCompany(int id)
         {
             return courierCompanies.Include(courier => courier.Packages)
-                .Include(courier => courier.Services).Where(courier => courier.Name == name).First();
+                .Include(courier => courier.Services).Where(courier => courier.Id == id).First();
         }
     }
 }

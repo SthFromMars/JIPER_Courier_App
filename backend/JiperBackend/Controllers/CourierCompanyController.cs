@@ -18,15 +18,13 @@ namespace JiperBackend.Controllers
             this.courierCompanyService = dataLoader;
         }
 
-        [HttpGet("courier/{name}")]
-        public IActionResult GetCourierCompany(string name)
+        [HttpGet("courier/{id}")]
+        public IActionResult GetCourierCompany(int id)
         {
-            if (string.IsNullOrWhiteSpace(name))
-                return BadRequest();
             CourierCompany courierCompany;
             try
             {
-                courierCompany = courierCompanyService.GetCourierCompany(name);
+                courierCompany = courierCompanyService.GetCourierCompany(id);
             }
             catch(InvalidOperationException)
             { 
