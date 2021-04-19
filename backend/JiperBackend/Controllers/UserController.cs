@@ -56,7 +56,7 @@ namespace JiperBackend.Controllers
             }
             catch (ArgumentNullException)
             {
-                return Unauthorized();
+                return NotFound();
             }
             
             return Ok(user);

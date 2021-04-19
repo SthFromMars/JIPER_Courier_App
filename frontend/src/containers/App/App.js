@@ -1,4 +1,6 @@
 import HelloApp from '../HelloApp/HelloApp';
+import Login from '../Login/Login';
+import Notification from '../Notification/Notification'
 import {Provider} from 'react-redux';
 import getStore from '../../state/store';
 import {
@@ -12,11 +14,15 @@ function App() {
     <Provider store={getStore()}>
       <Router>
         <Switch>
-          <Route path="/">
-            <HelloApp />
+          <Route exact path="/">
+            <HelloApp/>
+          </Route>
+          <Route exact path="/login">
+            <Login/>
           </Route>
         </Switch>
       </Router>
+      <Notification/>
     </Provider>
   );
 }
