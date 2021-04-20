@@ -24,7 +24,7 @@ function Login(props) {
       return;
     }
     // eslint-disable-next-line react/prop-types
-    props.dispatch(login({ email, password }))
+    props.login({ email, password });
   }
 
   return (
@@ -74,4 +74,4 @@ function Login(props) {
   );
 }
 
-export default connect()(Login)
+export default connect(null, {login})(Login)

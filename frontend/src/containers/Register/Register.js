@@ -158,7 +158,7 @@ function Register(props) {
                   <Form.Group size="lg" controlId="password">
                     <Form.Label>Password</Form.Label>
                     <Form.Control
-                      // type="password"
+                      type="password"
                       name={'password'}
                       value={fields.password.value}
                       isValid={validated && fields.password.isValid}
@@ -174,7 +174,7 @@ function Register(props) {
                   <Form.Group size="lg" controlId="passwordRepeat">
                     <Form.Label>Repeat your password</Form.Label>
                     <Form.Control
-                      // type="password"
+                      type="password"
                       name={'passwordRepeat'}
                       value={fields.passwordRepeat.value}
                       isValid={validated && fields.passwordRepeat.isValid}
