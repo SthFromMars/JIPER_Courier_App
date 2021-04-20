@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -6,12 +7,13 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './Register.css';
 import Logo from '../../components/Logo';
+import { register } from '../../state/auth/authActions'
 
-export default function Register() {
+function Register(props) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [passwordRepeat, setPasswordRepeat] = useState('');
   const [validated, setValidated] = useState(false);
@@ -23,11 +25,15 @@ export default function Register() {
 
   function handleSubmit(event) {
     event.preventDefault();
+    setValidated(true)
     if (event.currentTarget.checkValidity() === false) { // event.currentTarget = form
       event.stopPropagation();
+      return;
     }
-    setValidated(true);
-    console.log(email, password)
+    props.register({firstName, lastName, email, phoneNumber, password,
+      address: {
+        city, street, houseNr, zipCode
+      }})
   }
 
   return (
@@ -85,12 +91,12 @@ export default function Register() {
                   </Form.Group>
                 </Col>
                 <Col sm="10" md="8" lg="7" xl="6">
-                  <Form.Group size="lg" controlId="phone">
+                  <Form.Group size="lg" controlId="phoneNumber">
                     <Form.Label>Phone</Form.Label>
                     <Form.Control
                       required
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
                     />
                     <Form.Control.Feedback type="invalid">
                   Please provide a valid phone number
@@ -197,3 +203,5 @@ export default function Register() {
     </div>
   );
 }
+
+export default connect(null, {register})(Register)
