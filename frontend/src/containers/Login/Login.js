@@ -9,6 +9,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './Login.css';
+import Logo from '../../components/Logo';
 
 function Login(props) {
   const [email, setEmail] = useState('');
@@ -29,11 +30,7 @@ function Login(props) {
   return (
     <div className="Login">
       <Container>
-        <Row className="py-5 justify-content-center">
-          {/* TODO: Replace this with an actual logo if we get around to making one */}
-          <h1 className="display-4 logo-text " >Courrier</h1>
-          <h1 className="display-4 logo-text bg-primary text-white">App</h1>
-        </Row>
+        <Logo/>
         <Row className="justify-content-center">
           <Col sm="8" md="6" lg="5" xl="4">
             <h4>Login</h4>
