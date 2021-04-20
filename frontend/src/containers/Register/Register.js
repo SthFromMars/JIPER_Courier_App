@@ -10,30 +10,71 @@ import Logo from '../../components/Logo';
 import { register } from '../../state/auth/authActions'
 
 function Register(props) {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordRepeat, setPasswordRepeat] = useState('');
+  const [fields, setFields] = useState({
+    firstName: {value: '', isValid: false},
+    lastName: {value: '', isValid: false},
+    email: {value: '', isValid: false},
+    phoneNumber: {value: '', isValid: false},
+    password: {value: '', isValid: false},
+    passwordRepeat: {value: '', isValid: false},
+    city: {value: '', isValid: false},
+    street: {value: '', isValid: false},
+    houseNr: {value: '', isValid: false},
+    zipCode: {value: '', isValid: false},
+  })
   const [validated, setValidated] = useState(false);
-  const [city, setCity] = useState('');
-  const [street, setStreet] = useState('');
-  const [houseNr, setHouseNr] = useState('');
-  const [zipCode, setZipCode] = useState('');
+  const regex = {
+    email: /^.+@.+$/,
+    phoneNumber: /^\+?[0-9]+$/,
+  }
 
+  function handleFieldChange(event){
+    const {value, name} = event.target;
+    const fieldsNew = {...fields};
+    switch (name) {
+      case 'phoneNumber':
+      case 'email':
+        fieldsNew[name] = {
+          value: value,
+          isValid: regex[name].test(value)
+        }
+        break;
+      case 'password':
+        fieldsNew.password = {value, isValid: Boolean(value)};
+        fieldsNew.passwordRepeat.isValid = value === fields.passwordRepeat.value && fields.passwordRepeat.value
+        break;
+      case 'passwordRepeat':
+        fieldsNew.passwordRepeat = {
+          value,
+          isValid: fields.password.value === value && value,
+        };
+        break;
+      default:
+        fieldsNew[name] = {value, isValid: Boolean(value)};
+    }
+    setFields(fieldsNew);
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
-    setValidated(true)
-    if (event.currentTarget.checkValidity() === false) { // event.currentTarget = form
+    setValidated(true);
+    let formValidity = true;
+    Object.values(fields).forEach(value => {
+      formValidity = formValidity && value.isValid;
+    })
+    if (!formValidity ) { // event.currentTarget = form
       event.stopPropagation();
       return;
     }
-    props.register({firstName, lastName, email, phoneNumber, password,
-      address: {
-        city, street, houseNr, zipCode
-      }})
+    const payload = {address: {}};
+    Object.keys(fields).forEach(key => {
+      if(key === 'city' || key === 'street' || key === 'houseNr' || key === 'zipCode'){
+        payload.address[key] = fields[key].value;
+      } else {
+        payload[key] = fields[key].value;
+      }
+    })
+    props.register(payload);
   }
 
   return (
@@ -43,7 +84,7 @@ function Register(props) {
         <Row className="justify-content-center">
           <Col sm="16" md="12" lg="10" xl="8">
             <h4>Register</h4>
-            <Form noValidate validated={validated} onSubmit={handleSubmit} >
+            <Form noValidate onSubmit={handleSubmit} >
 
               <Row>
                 <Col sm="10" md="8" lg="7" xl="6">
@@ -51,12 +92,14 @@ function Register(props) {
                     <Form.Label>First name</Form.Label>
                     <Form.Control
                       autoFocus
-                      required
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
+                      name={'firstName'}
+                      value={fields.firstName.value}
+                      isValid={validated && fields.firstName.isValid}
+                      isInvalid={validated && !fields.firstName.isValid}
+                      onChange={handleFieldChange}
                     />
                     <Form.Control.Feedback type="invalid">
-                    Please provide your first name
+                      Please provide your first name
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -64,12 +107,14 @@ function Register(props) {
                   <Form.Group size="lg" controlId="lastName">
                     <Form.Label>Last name</Form.Label>
                     <Form.Control
-                      required
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
+                      name={'lastName'}
+                      value={fields.lastName.value}
+                      isValid={validated && fields.lastName.isValid}
+                      isInvalid={validated && !fields.lastName.isValid}
+                      onChange={handleFieldChange}
                     />
                     <Form.Control.Feedback type="invalid">
-                    Please provide your last name
+                      Please provide your last name
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -80,13 +125,14 @@ function Register(props) {
                   <Form.Group size="lg" controlId="email">
                     <Form.Label>Email</Form.Label>
                     <Form.Control
-                      required
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      name={'email'}
+                      value={fields.email.value}
+                      isValid={validated && fields.email.isValid}
+                      isInvalid={validated && !fields.email.isValid}
+                      onChange={handleFieldChange}
                     />
                     <Form.Control.Feedback type="invalid">
-                  Please provide a valid email
+                      Please provide a valid email
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -94,12 +140,14 @@ function Register(props) {
                   <Form.Group size="lg" controlId="phoneNumber">
                     <Form.Label>Phone</Form.Label>
                     <Form.Control
-                      required
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      name={'phoneNumber'}
+                      value={fields.phoneNumber.value}
+                      isValid={validated && fields.phoneNumber.isValid}
+                      isInvalid={validated && !fields.phoneNumber.isValid}
+                      onChange={handleFieldChange}
                     />
                     <Form.Control.Feedback type="invalid">
-                  Please provide a valid phone number
+                      Please provide a valid phone number
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -110,13 +158,15 @@ function Register(props) {
                   <Form.Group size="lg" controlId="password">
                     <Form.Label>Password</Form.Label>
                     <Form.Control
-                      required
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      // type="password"
+                      name={'password'}
+                      value={fields.password.value}
+                      isValid={validated && fields.password.isValid}
+                      isInvalid={validated && !fields.password.isValid}
+                      onChange={handleFieldChange}
                     />
                     <Form.Control.Feedback type="invalid">
-                  Please provide a password
+                      Please provide a password
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -124,13 +174,15 @@ function Register(props) {
                   <Form.Group size="lg" controlId="passwordRepeat">
                     <Form.Label>Repeat your password</Form.Label>
                     <Form.Control
-                      required
-                      type="password"
-                      value={passwordRepeat}
-                      onChange={(e) => setPasswordRepeat(e.target.value)}
+                      // type="password"
+                      name={'passwordRepeat'}
+                      value={fields.passwordRepeat.value}
+                      isValid={validated && fields.passwordRepeat.isValid}
+                      isInvalid={validated && !fields.passwordRepeat.isValid}
+                      onChange={handleFieldChange}
                     />
                     <Form.Control.Feedback type="invalid">
-                  Please provide repeat your password
+                      Please repeat your password
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -141,12 +193,14 @@ function Register(props) {
                   <Form.Group size="lg" controlId="city">
                     <Form.Label>City</Form.Label>
                     <Form.Control
-                      required
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
+                      name={'city'}
+                      value={fields.city.value}
+                      isValid={validated && fields.city.isValid}
+                      isInvalid={validated && !fields.city.isValid}
+                      onChange={handleFieldChange}
                     />
                     <Form.Control.Feedback type="invalid">
-                  Please provide your city
+                      Please provide your city
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -154,12 +208,14 @@ function Register(props) {
                   <Form.Group size="lg" controlId="street">
                     <Form.Label>Street</Form.Label>
                     <Form.Control
-                      required
-                      value={street}
-                      onChange={(e) => setStreet(e.target.value)}
+                      name={'street'}
+                      value={fields.street.value}
+                      isValid={validated && fields.street.isValid}
+                      isInvalid={validated && !fields.street.isValid}
+                      onChange={handleFieldChange}
                     />
                     <Form.Control.Feedback type="invalid">
-                  Please provide your street
+                      Please provide your street
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -170,12 +226,14 @@ function Register(props) {
                   <Form.Group size="lg" controlId="houseNr">
                     <Form.Label>House Number</Form.Label>
                     <Form.Control
-                      required
-                      value={houseNr}
-                      onChange={(e) => setHouseNr(e.target.value)}
+                      name={'houseNr'}
+                      value={fields.houseNr.value}
+                      isValid={validated && fields.houseNr.isValid}
+                      isInvalid={validated && !fields.houseNr.isValid}
+                      onChange={handleFieldChange}
                     />
                     <Form.Control.Feedback type="invalid">
-                  Please provide your house number
+                      Please provide your house number
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -183,19 +241,23 @@ function Register(props) {
                   <Form.Group size="lg" controlId="zipCode">
                     <Form.Label>Zip code</Form.Label>
                     <Form.Control
-                      required
-                      value={zipCode}
-                      onChange={(e) => setZipCode(e.target.value)}
+                      name={'zipCode'}
+                      value={fields.zipCode.value}
+                      isValid={validated && fields.zipCode.isValid}
+                      isInvalid={validated && !fields.zipCode.isValid}
+                      onChange={handleFieldChange}
                     />
                     <Form.Control.Feedback type="invalid">
-                  Please provide your zip code
+                      Please provide your zip code
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
               </Row>
+
               <Button block size="lg" type="submit">
                 Register
               </Button>
+
             </Form>
           </Col>
         </Row>
