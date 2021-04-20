@@ -8,6 +8,7 @@ import Col from 'react-bootstrap/Col';
 import './Register.css';
 import Logo from '../../components/Logo';
 import { register } from '../../state/auth/authActions'
+import {Link} from 'react-router-dom';
 
 function Register(props) {
   const [fields, setFields] = useState({
@@ -259,6 +260,9 @@ function Register(props) {
               </Button>
 
             </Form>
+            <div className="caption">
+              Already have an account?&nbsp;<Link to="/login">Click here to log in</Link>
+            </div>
           </Col>
         </Row>
       </Container>
