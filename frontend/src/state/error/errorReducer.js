@@ -7,12 +7,12 @@ const initialState = {
 
 export default function authReducer(state = initialState, action) {
   switch(action.type) {
-  case SET_ERROR:
-    return {
-      ...state,
-      ...action.payload
-    }
-  default:
-    return state
+    case SET_ERROR:
+      return {
+        ...state,
+        ...action.payload
+      }
+    default:
+      return state
   }
 }

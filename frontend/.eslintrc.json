@@ -25,6 +25,8 @@
     "rules": {
         "react/react-in-jsx-scope": "off",
         "quotes": ["warn", "single"],
-        "indent": ["warn", 2]
+        "indent": ["warn", 2, { "SwitchCase": 1 }],
+        "no-unused-vars": "warn",
+        "react/prop-types": "off"
     }
 }
