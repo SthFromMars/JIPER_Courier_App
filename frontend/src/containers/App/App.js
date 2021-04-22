@@ -1,6 +1,7 @@
 import HelloApp from '../HelloApp/HelloApp';
 import Login from '../Login/Login';
 import Notification from '../Notification/Notification'
+import Services from '../Services/Services'
 import {Provider} from 'react-redux';
 import getStore from '../../state/store';
 import {
@@ -23,6 +24,9 @@ function App() {
           </Route>
           <Route exact path="/register">
             <Register/>
+          </Route>
+          <Route exact path="/services">
+            <Services/>
           </Route>
         </Switch>
       </Router>
