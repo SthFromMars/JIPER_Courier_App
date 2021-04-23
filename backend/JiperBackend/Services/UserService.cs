@@ -30,7 +30,7 @@ namespace JiperBackend.Services
 
         public User GetUser(string email, string password)
         {
-            return users.Where(u => u.Email == email && u.Password == password).FirstOrDefault();
+            return users.Where(u => u.Email == email && u.Password == password).First();
         }
     }
 }
