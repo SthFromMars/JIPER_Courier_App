@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { connect, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { login } from '../../state/auth/authActions'
 
@@ -13,12 +13,20 @@ import Logo from '../../components/Logo';
 import { useHistory } from 'react-router-dom';
 
 function Login(props) {
+  // Not the ideal loggedIn handling, but will suffice for now
+  const history = useHistory();
+  const isLoggedIn = useSelector(state => state.auth.loggedIn);
+  useEffect(() => {
+    if (isLoggedIn) {
+      history.push('/services') // TODO: replace with home
+    }
+  },[isLoggedIn])
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [validated, setValidated] = useState(false);
-  const history = useHistory();
+  const [validated, setValidated] = useState(false); 
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     setValidated(true)
     if (event.currentTarget.checkValidity() === false) { // event.currentTarget = form
@@ -27,9 +35,6 @@ function Login(props) {
     }
     // eslint-disable-next-line react/prop-types
     props.login({ email, password });
-
-    // TODO this is an atrocity and it should be fixed
-    history.push('/services');
   }
 
   return (
@@ -79,8 +84,5 @@ function Login(props) {
   );
 }
 
-const mapStateToProps = (state) => ({ 
-  auth: state.auth,
-});
 
-export default connect(mapStateToProps, {login})(Login)
+export default connect(null, {login})(Login)
