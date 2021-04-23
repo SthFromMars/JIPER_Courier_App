@@ -1,4 +1,4 @@
-import { UPDATE_ORDER } from './orderTypes'
+import { UPDATE_ORDER, RESET_ORDER } from './orderTypes'
 
 
 // ORDER
@@ -6,9 +6,15 @@ import { UPDATE_ORDER } from './orderTypes'
 /**
  * Update a specific part of the order state order[key] = value
  */
-export function updateOrder({ key, value }) {
+export function updateOrder({ path, value }) {
   return {
     type: UPDATE_ORDER, 
-    payload: { key, value }
+    payload: { path, value }
+  }
+}
+
+export function resetOrder() {
+  return {
+    type: RESET_ORDER, 
   }
 }

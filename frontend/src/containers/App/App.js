@@ -1,4 +1,3 @@
-import HelloApp from '../HelloApp/HelloApp';
 import Login from '../Login/Login';
 import Notification from '../Notification/Notification'
 import Services from '../Services/Services'
@@ -17,9 +16,6 @@ function App() {
       <Router>
         <Switch>
           <Route exact path="/">
-            <HelloApp/>
-          </Route>
-          <Route exact path="/login">
             <Login/>
           </Route>
           <Route exact path="/register">

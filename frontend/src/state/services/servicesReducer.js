@@ -11,8 +11,7 @@ const initialState = {
 export default function servicesReducer(state = initialState, action) {
   switch(action.type) {
     case SET_SERVICES:
-      state = action.payload
-      return state
+      return action.payload
     default:
       return state
   }

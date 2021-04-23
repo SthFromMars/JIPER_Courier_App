@@ -10,11 +10,13 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './Login.css';
 import Logo from '../../components/Logo';
+import { useHistory } from 'react-router-dom';
 
 function Login(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [validated, setValidated] = useState(false);
+  const history = useHistory();
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -25,6 +27,9 @@ function Login(props) {
     }
     // eslint-disable-next-line react/prop-types
     props.login({ email, password });
+
+    // TODO this is an atrocity and it should be fixed
+    history.push('/services');
   }
 
   return (
@@ -74,4 +79,8 @@ function Login(props) {
   );
 }
 
-export default connect(null, {login})(Login)
+const mapStateToProps = (state) => ({ 
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps, {login})(Login)

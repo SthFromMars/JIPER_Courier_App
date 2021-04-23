@@ -1,20 +1,24 @@
-import { UPDATE_ORDER } from './orderTypes'
+import { RESET_ORDER, UPDATE_ORDER } from './orderTypes'
 
 const initialState = {
-  loading: false,
   // Tracked order state
-  order: {
-    services: [],
-    package: {},
-    address: {},
-  }
+  services: [],
+  package: null,
+  sender: {}, // address
+  senderName: '',
+  recipient: {}, // address
+  recipientName: '',
 }
 
 export default function orderReducer(state = initialState, action) {
   switch(action.type) {
     case UPDATE_ORDER:
-      state.order[action.payload.key] = action.payload.value
-      return state
+      return {
+        ...state,
+        [action.payload.path]: action.payload.value
+      }
+    case RESET_ORDER:
+      return initialState
     default:
       return state
   }
