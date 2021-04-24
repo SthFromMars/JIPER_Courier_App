@@ -6,7 +6,7 @@ export function login(payload) {
   return async dispatch => {
     try {
       const res = await axios.post('/User/login', payload);
-      dispatch({ type: SET_USER_DATA, payload: res });
+      dispatch({ type: SET_USER_DATA, payload: res.data });
       return res;
     } catch (error) {
       dispatch(setError({ error: true, message: `Login error: ${error}` }));
@@ -19,7 +19,7 @@ export function register(payload) {
   return async dispatch => {
     try {
       const res = await axios.post('/User/register', payload);
-      dispatch({ type: SET_USER_DATA, payload: res });
+      dispatch({ type: SET_USER_DATA, payload: res.data });
       return res;
     } catch (error) {
       dispatch(setError({ error: true, message: `Registration error: ${error}` }));

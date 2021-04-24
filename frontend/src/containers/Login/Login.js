@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { connect, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { login } from '../../state/auth/authActions'
 
@@ -9,14 +9,24 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './Login.css';
-import Logo from '../../components/Logo';
+import Logo from '../../components/Logo/Logo';
+import { useHistory } from 'react-router-dom';
 
 function Login(props) {
+  // Not the ideal loggedIn handling, but will suffice for now
+  const history = useHistory();
+  const isLoggedIn = useSelector(state => state.auth.loggedIn);
+  useEffect(() => {
+    if (isLoggedIn) {
+      history.push('/home')
+    }
+  },[isLoggedIn])
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [validated, setValidated] = useState(false);
+  const [validated, setValidated] = useState(false); 
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     setValidated(true)
     if (event.currentTarget.checkValidity() === false) { // event.currentTarget = form
@@ -73,5 +83,6 @@ function Login(props) {
     </div>
   );
 }
+
 
 export default connect(null, {login})(Login)

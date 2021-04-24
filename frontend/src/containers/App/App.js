@@ -1,7 +1,9 @@
-import HelloApp from '../HelloApp/HelloApp';
 import Login from '../Login/Login';
 import Notification from '../Notification/Notification'
-import {Provider} from 'react-redux';
+import Navigationbar from '../../components/Navigationbar/Navigationbar'
+import Home from '../Home/Home'
+import Services from '../Services/Services'
+import { Provider } from 'react-redux';
 import getStore from '../../state/store';
 import {
   BrowserRouter as Router,
@@ -11,18 +13,23 @@ import {
 import Register from '../Register/Register';
 
 function App() {
+
   return (
     <Provider store={getStore()}>
+      <Navigationbar/>
       <Router>
         <Switch>
           <Route exact path="/">
-            <HelloApp/>
-          </Route>
-          <Route exact path="/login">
             <Login/>
           </Route>
           <Route exact path="/register">
             <Register/>
+          </Route>
+          <Route exact path="/home">
+            <Home/>
+          </Route>
+          <Route exact path="/services">
+            <Services/>
           </Route>
         </Switch>
       </Router>
