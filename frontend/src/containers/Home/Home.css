@@ -1,0 +1,4 @@
+.navigation-block-btn:hover {
+  border: solid 2px var(--primary) !important;
+  background-color: rgba(0, 123, 255, 0.15) !important;
+}

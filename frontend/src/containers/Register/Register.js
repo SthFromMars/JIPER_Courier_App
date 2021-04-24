@@ -6,7 +6,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './Register.css';
-import Logo from '../../components/Logo';
+import Logo from '../../components/Logo/Logo';
 import { register } from '../../state/auth/authActions'
 import {Link, useHistory} from 'react-router-dom';
 
@@ -16,7 +16,7 @@ function Register(props) {
   const isLoggedIn = useSelector(state => state.auth.loggedIn);
   useEffect(() => {
     if (isLoggedIn) {
-      history.push('/services') // TODO: replace with home
+      history.push('/home')
     }
   },[isLoggedIn])
 
@@ -90,7 +90,7 @@ function Register(props) {
   return (
     <div className="Register">
       <Container>
-        <Logo/>
+        <Logo className="py-5"/>
         <Row className="justify-content-center">
           <Col sm="16" md="12" lg="10" xl="8">
             <h4>Register</h4>

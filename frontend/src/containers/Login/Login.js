@@ -9,7 +9,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './Login.css';
-import Logo from '../../components/Logo';
+import Logo from '../../components/Logo/Logo';
 import { useHistory } from 'react-router-dom';
 
 function Login(props) {
@@ -18,7 +18,7 @@ function Login(props) {
   const isLoggedIn = useSelector(state => state.auth.loggedIn);
   useEffect(() => {
     if (isLoggedIn) {
-      history.push('/services') // TODO: replace with home
+      history.push('/home')
     }
   },[isLoggedIn])
 
