@@ -2,10 +2,6 @@ import { SET_SERVICES } from './servicesTypes'
 import { setError } from '../error/errorActions'
 import axios from '../../utils/axios'
 
-
-
-// SERVICES
-
 const PACKAGE_TYPES = ['SELECT', 'MAX_WEIGHT']
 function setServices(payload) {
   payload.packageType = PACKAGE_TYPES[payload.packageType] // BE will return enum index
