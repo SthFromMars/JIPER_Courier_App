@@ -78,10 +78,7 @@ namespace JiperBackend.Controllers
                 int userId = data["userId"].ToObject<int>();
                 User sender = userService.GetUser(userId);
                 string senderName = sender.FirstName + " " + sender.LastName;
-                senderAddress = data["senderAddress"].ToObject<Address>();
-                //var sAddress = data["senderAddress"].ToObject<Dictionary<string, string>>();
-                //senderAddress = new Address(sAddress["senderCity"], sAddress["senderStreet"], sAddress["senderHouseNr"], sAddress["senderZipCode"]);
-
+                
                 int packageId = data["package"].ToObject<int>();
                 int courierCompanyId = data["courierCompanyId"].ToObject<int>();
                 List<int> serviceIds = data["services"].Values<int>().ToList();
@@ -92,8 +89,10 @@ namespace JiperBackend.Controllers
 
                 string recipientName = data["recipientName"].ToObject<string>();
                 recipientAddress = data["recipientAddress"].ToObject<Address>();
+                senderAddress = data["senderAddress"].ToObject<Address>();
 
                 order = new Order(date, paymentType, package, senderName, senderAddress, recipientName, recipientAddress, services);
+                userService.AddOrder(userId, order);
             }
             catch (NullReferenceException)
             {

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace JiperBackend.Services
 {
@@ -44,6 +45,10 @@ namespace JiperBackend.Services
 
             if (user != null)
             {
+                if (user.Orders == null)
+                {
+                    user.Orders = new List<Order>();
+                }
                 user.Orders.Add(order);
             }
             SaveChanges();
