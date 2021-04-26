@@ -33,6 +33,11 @@ namespace JiperBackend.Services
             return users.Where(u => u.Email == email && u.Password == password).FirstOrDefault();
         }
 
+        public User GetUser(int id)
+        {
+            return users.Where(u => u.Id == id).FirstOrDefault();
+        }
+
         public void AddOrder(int userId, Order order)
         {
             User user = users.Where(u => u.Id == userId).FirstOrDefault();

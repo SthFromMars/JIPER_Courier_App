@@ -11,6 +11,10 @@ namespace JiperBackend.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Status { get; set; }
+        public bool Paid { get; set; }
+        [Column(TypeName = "timestamp")]
+        public DateTime Date { get; set; }
+        public string PaymentType { get; set; }
         public double Price { get; set; }
         public Package Package { get; set; }
         public string SenderName { get; set; }
@@ -19,16 +23,28 @@ namespace JiperBackend.Models
         public Address Recipient { get; set; }
         public List<Service> Services { get; set; }
 
-        public Order(double price, Package package, string senderName, Address sender, string recipientName, Address recipient, List<Service> services)
+        public Order(DateTime date, string paymentType, Package package, string senderName, Address sender, string recipientName, Address recipient, List<Service> services)
         {
+            Paid = false;
+            Date = date;
+            PaymentType = paymentType;
             Status = "Submitted";
-            Price = price;
             Package = package;
             SenderName = senderName;
             Sender = sender;
             RecipientName = recipientName;
             Recipient = recipient;
             Services = services;
+
+            Price = package.Price;
+
+            foreach (Service service in services)
+            {
+                Price += service.Price;
+            }
         }
+
+        public Order()
+        { }
     }
 }

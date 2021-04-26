@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using JiperBackend.Services;
 using JiperBackend.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace JiperBackend.Controllers
 {
@@ -60,6 +62,52 @@ namespace JiperBackend.Controllers
             }
             
             return Ok(user);
+        }
+
+        [HttpPost("neworder")]
+        public IActionResult NewOrder([FromBody] JObject data, [FromServices] CourierCompanyService courierCompanyService)
+        {
+            Order order;
+            Address senderAddress, recipientAddress;
+
+            try
+            {
+                DateTime date = DateTime.Now;
+                string paymentType = data["paymentType"].ToObject<string>();
+
+                int userId = data["userId"].ToObject<int>();
+                User sender = userService.GetUser(userId);
+                string senderName = sender.FirstName + " " + sender.LastName;
+                senderAddress = data["senderAddress"].ToObject<Address>();
+                //var sAddress = data["senderAddress"].ToObject<Dictionary<string, string>>();
+                //senderAddress = new Address(sAddress["senderCity"], sAddress["senderStreet"], sAddress["senderHouseNr"], sAddress["senderZipCode"]);
+
+                int packageId = data["package"].ToObject<int>();
+                int courierCompanyId = data["courierCompanyId"].ToObject<int>();
+                List<int> serviceIds = data["services"].Values<int>().ToList();
+
+                CourierCompany company = courierCompanyService.GetCourierCompany(courierCompanyId);
+                List<Service> services = company.Services.FindAll(s => serviceIds.Contains(s.Id));
+                Package package = company.Packages.Find(p => p.Id == packageId);
+
+                string recipientName = data["recipientName"].ToObject<string>();
+                recipientAddress = data["recipientAddress"].ToObject<Address>();
+
+                order = new Order(date, paymentType, package, senderName, senderAddress, recipientName, recipientAddress, services);
+            }
+            catch (NullReferenceException)
+            {
+                return BadRequest();
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+            catch (FormatException)
+            {
+                return NotFound();
+            }
+            return Ok(order);
         }
     }
 }
