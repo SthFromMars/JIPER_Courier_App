@@ -1,0 +1,20 @@
+{
+    "paymentType": "CARD",
+    "userId": "7",
+    "senderAddress": {
+        "city": "city",
+        "street": "str",
+        "houseNr": "1354",
+        "zipCode": "6545"
+    },
+    "package": "1",
+    "courierCompanyId": "1",
+    "services": [1, 2],
+    "recipientName": "aaa",
+    "recipientAddress": {
+        "city": "city",
+        "street": "str",
+        "houseNr": "1354",
+        "zipCode": "6545"
+    }
+}
