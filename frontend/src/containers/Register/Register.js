@@ -270,7 +270,7 @@ function Register(props) {
 
             </Form>
             <div className="caption">
-              Already have an account?&nbsp;<Link to="/login">Click here to log in</Link>
+              Already have an account?&nbsp;<Link to="/">Click here to log in</Link>
             </div>
           </Col>
         </Row>
