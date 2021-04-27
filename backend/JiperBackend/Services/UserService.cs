@@ -36,7 +36,7 @@ namespace JiperBackend.Services
 
         public User GetUser(int id)
         {
-            return users.Include(u => u.Orders).Where(u => u.Id == id).FirstOrDefault();
+            return users.Include(u => u.Address).Include(u => u.Orders).Where(u => u.Id == id).FirstOrDefault();
         }
 
         public void AddOrder(int userId, Order order)
