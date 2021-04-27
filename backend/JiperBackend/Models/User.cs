@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JiperBackend.Models
 {
@@ -12,6 +13,7 @@ namespace JiperBackend.Models
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
         public Address Address { get; set; }
+        public List<Order> Orders { get; set; }
 
         public User(string email, string password, string firstName, string lastName, string phoneNumber, Address address)
         {
@@ -21,6 +23,7 @@ namespace JiperBackend.Models
             LastName = lastName;
             PhoneNumber = phoneNumber;
             Address = address;
+            Orders = new List<Order>();
         }
         public User()
         {

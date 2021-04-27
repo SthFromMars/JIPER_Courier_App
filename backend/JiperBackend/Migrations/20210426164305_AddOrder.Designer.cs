@@ -3,15 +3,17 @@ using System;
 using JiperBackend.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace JiperBackend.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20210426164305_AddOrder")]
+    partial class AddOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,17 +70,8 @@ namespace JiperBackend.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp");
-
                     b.Property<int?>("PackageId")
                         .HasColumnType("integer");
-
-                    b.Property<bool>("Paid")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("PaymentType")
-                        .HasColumnType("text");
 
                     b.Property<double>("Price")
                         .HasColumnType("double precision");
