@@ -64,7 +64,7 @@ namespace JiperBackend.Controllers
             return Ok(user);
         }
 
-        [HttpPost("addorder")]
+        [HttpPost("neworder")]
         public IActionResult AddOrder([FromBody] JObject data, [FromServices] CourierCompanyService courierCompanyService)
         {
             Order order;
