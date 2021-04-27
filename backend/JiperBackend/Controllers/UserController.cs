@@ -108,5 +108,39 @@ namespace JiperBackend.Controllers
             }
             return Ok(order);
         }
+
+        [HttpGet("{id}/orders")]
+        public IActionResult GetOrders(int id)
+        {
+            List<Order> orders;
+            try
+            {
+                orders = userService.GetOrders(id);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+            return Ok(orders);
+        }
+
+        [HttpGet("{userId}/orders/{orderId}")]
+        public IActionResult GetOrder(int userId, int orderId)
+        {
+            Order order;
+            try
+            {
+                order = userService.GetOrder(userId, orderId);
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+            catch (InvalidOperationException)
+            {
+                return NotFound();
+            }
+            return Ok(order);
+        }
     }
 }

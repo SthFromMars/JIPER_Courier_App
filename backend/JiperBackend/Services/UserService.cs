@@ -36,12 +36,12 @@ namespace JiperBackend.Services
 
         public User GetUser(int id)
         {
-            return users.Where(u => u.Id == id).FirstOrDefault();
+            return users.Include(u => u.Orders).Where(u => u.Id == id).FirstOrDefault();
         }
 
         public void AddOrder(int userId, Order order)
         {
-            User user = users.Where(u => u.Id == userId).FirstOrDefault();
+            User user = GetUser(userId);
 
             if (user != null)
             {
@@ -52,6 +52,28 @@ namespace JiperBackend.Services
                 user.Orders.Add(order);
             }
             SaveChanges();
+        }
+
+        public List<Order> GetOrders(int id)
+        {
+            User user = GetUser(id);
+
+            if (user == null)
+            {
+                throw new ArgumentNullException();
+            }
+            return user.Orders;
+        }
+
+        public Order GetOrder(int userId, int orderId)
+        {
+            User user = GetUser(userId);
+
+            if(user == null)
+            {
+                throw new ArgumentNullException();
+            }
+            return user.Orders.Where(order => order.Id == orderId).First();
         }
     }
 }

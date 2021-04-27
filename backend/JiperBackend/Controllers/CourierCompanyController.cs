@@ -28,7 +28,7 @@ namespace JiperBackend.Controllers
             }
             catch(InvalidOperationException)
             { 
-                return BadRequest();
+                return NotFound();
             }
             return Ok(courierCompany);
         }
