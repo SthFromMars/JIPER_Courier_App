@@ -64,8 +64,8 @@ namespace JiperBackend.Controllers
             return Ok(user);
         }
 
-        [HttpPost("neworder")]
-        public IActionResult NewOrder([FromBody] JObject data, [FromServices] CourierCompanyService courierCompanyService)
+        [HttpPost("addorder")]
+        public IActionResult AddOrder([FromBody] JObject data, [FromServices] CourierCompanyService courierCompanyService)
         {
             Order order;
             Address senderAddress, recipientAddress;
@@ -79,7 +79,7 @@ namespace JiperBackend.Controllers
                 User sender = userService.GetUser(userId);
                 string senderName = sender.FirstName + " " + sender.LastName;
                 
-                int packageId = data["package"].ToObject<int>();
+                int packageId = data["packageId"].ToObject<int>();
                 int courierCompanyId = data["courierCompanyId"].ToObject<int>();
                 List<int> serviceIds = data["services"].Values<int>().ToList();
 
