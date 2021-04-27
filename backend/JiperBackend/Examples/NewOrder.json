@@ -7,7 +7,7 @@
         "houseNr": "1354",
         "zipCode": "6545"
     },
-    "package": "1",
+    "packageId": "1",
     "courierCompanyId": "1",
     "services": [1, 2],
     "recipientName": "aaa",
