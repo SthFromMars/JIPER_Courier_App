@@ -3,7 +3,7 @@ import { RESET_ORDER, UPDATE_ORDER } from './orderTypes'
 const initialState = {
   // Tracked order state
   services: [],
-  package: null,
+  packageId: null,
   sender: {}, // address
   senderName: '',
   recipient: {}, // address

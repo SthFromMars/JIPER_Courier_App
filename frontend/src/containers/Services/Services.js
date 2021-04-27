@@ -21,8 +21,8 @@ class Services extends React.Component {
   async componentDidMount() {
     await this.props.loadServices(1)
     // Preselect the first package if none selected already
-    if (this.props.services.packages.length && !this.props.order.package) {
-      this.props.updateOrder({ path: 'package', value: this.props.services.packages[0].id })
+    if (this.props.services.packages.length && !this.props.order.packageId) {
+      this.props.updateOrder({ path: 'packageId', value: this.props.services.packages[0].id })
     }
   }
 
@@ -78,8 +78,8 @@ class Services extends React.Component {
                   this.props.services.packages.map(p => <Row 
                     key={p.id} 
                     className={`select-element text-center 
-                    ${this.props.order.package === p.id ? 'selected' : ''}`} 
-                    onClick={(evt) => this.handleChange(p.id, 'package', evt)} 
+                    ${this.props.order.packageId === p.id ? 'selected' : ''}`} 
+                    onClick={(evt) => this.handleChange(p.id, 'packageId', evt)} 
                     noGutters={true}
                   > 
                     <Col>
@@ -87,7 +87,7 @@ class Services extends React.Component {
                         id={p.id} 
                         type="checkbox" 
                         aria-label={p.id}
-                        checked={this.props.order.package === p.id}
+                        checked={this.props.order.packageId === p.id}
                         readOnly={true}
                       />
                     </Col>
