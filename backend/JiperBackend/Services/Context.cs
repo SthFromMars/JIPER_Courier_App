@@ -15,7 +15,8 @@ namespace JiperBackend.Services
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().ToTable("User").UseXminAsConcurrencyToken(); ;
+            modelBuilder.Entity<User>().ToTable("User").UseXminAsConcurrencyToken();
+            modelBuilder.Entity<Address>().ToTable("Address").UseXminAsConcurrencyToken();
             modelBuilder.Entity<CourierCompany>().ToTable("CourierCompany");
         }
     }
