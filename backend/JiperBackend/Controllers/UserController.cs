@@ -179,5 +179,51 @@ namespace JiperBackend.Controllers
             return Ok(user);
         }
 
+        [HttpPost("resolveconflict")]
+        public IActionResult ResolveConflict([FromBody] JObject data)
+        {
+            User user = null;
+            bool overwrite = false;
+            try
+            {
+                overwrite = data["overwrite"].ToObject<bool>();
+                int userId = data["userId"].ToObject<int>();
+                user = userService.GetUser(userId) ?? throw new ArgumentNullException();
+                user.Email = data["email"].ToObject<string>();
+                user.Password = data["password"].ToObject<string>();
+                user.FirstName = data["firstName"].ToObject<string>();
+                user.LastName = data["lastName"].ToObject<string>();
+                user.PhoneNumber = data["phoneNumber"].ToObject<string>();
+                Address address = data["address"].ToObject<Address>();
+                user.Address.City = address.City;
+                user.Address.Street = address.Street;
+                user.Address.HouseNr = address.HouseNr;
+                user.Address.ZipCode = address.ZipCode;
+                userService.SaveChanges();
+            }
+            catch (NullReferenceException)
+            {
+                return BadRequest();
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                if (overwrite)
+                {
+                    var entry = ex.Entries.Single();
+                    entry.OriginalValues.SetValues(entry.GetDatabaseValues());
+                    userService.SaveChanges();
+                }
+                else
+                {
+                    ex.Entries.Single().Reload();
+                    userService.SaveChanges();
+                }
+            }
+            return Ok(user);
+        }
     }
 }
