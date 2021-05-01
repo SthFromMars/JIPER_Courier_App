@@ -62,7 +62,15 @@ namespace JiperBackend.Services
             {
                 throw new ArgumentNullException();
             }
-            return user.Orders;
+            return users
+                .Include(u => u.Orders)
+                .Where(u => u.Id == id)
+                .SelectMany(u => u.Orders)
+                    .Include(o => o.Package)
+                    .Include(o => o.Recipient)
+                    .Include(o => o.Sender)
+                    .Include(o => o.Services)
+                    .ToList();
         }
 
         public Order GetOrder(int userId, int orderId)
