@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -55,6 +56,17 @@ class Services extends React.Component {
 
   render() {
     return <Container className="py-5">
+      <Row noGutters={true}>
+        <Col className="text-left py-3">
+          <Link 
+            className="text-left navigation-block-btn btn btn-outline-primary" 
+            style={{ color: 'black' }} 
+            to="/home"
+          >
+            <b>Back</b>
+          </Link>
+        </Col>
+      </Row>
       <Row className="justify-content-center">
         <Col sm="10" md="10" lg="8" xl="8">
           <h4>
