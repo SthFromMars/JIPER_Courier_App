@@ -40,8 +40,6 @@ function OrderCreation(props) {
     }
   }
 
-  console.log(props.order)
-
   return (
     <div className="Login">
       <Container>
