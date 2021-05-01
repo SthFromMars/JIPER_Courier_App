@@ -8,6 +8,7 @@ import paymentTypes from './paymentTypes';
 import './OrderCreation.css';
 import {connect} from 'react-redux';
 import {updateOrder} from '../../state/order/orderActions';
+import axios from '../../utils/axios';
 
 
 function OrderCreation(props) {
@@ -16,7 +17,7 @@ function OrderCreation(props) {
 
   useEffect(() => {
     props.updateOrder({
-      path: 'sender',
+      path: 'senderAddress',
       value: props.user.address,
     })
   }, []);
@@ -28,9 +29,18 @@ function OrderCreation(props) {
       e.stopPropagation();
       return;
     }
+    try {
+      await axios.post('/User/neworder', {
+        ...props.order,
+        userId: props.user.id,
+        courierCompanyId: props.services.id,
+      });
+    } catch (error) {
+      console.log('shit')
+    }
   }
 
-  console.log(JSON.stringify(props.user, null, 2))
+  console.log(props.order)
 
   return (
     <div className="Login">
@@ -58,10 +68,10 @@ function OrderCreation(props) {
                     <Form.Label>City</Form.Label>
                     <Form.Control
                       required
-                      value={props.order.sender.city}
+                      value={props.order.senderAddress.city}
                       onChange={(e) => props.updateOrder({
-                        path: 'sender',
-                        value: {...props.order.sender, city: e.target.value},
+                        path: 'senderAddress',
+                        value: {...props.order.senderAddress, city: e.target.value},
                       })}
                     />
                     <Form.Control.Feedback type="invalid">
@@ -72,10 +82,10 @@ function OrderCreation(props) {
                     <Form.Label>Street</Form.Label>
                     <Form.Control
                       required
-                      value={props.order.sender.street}
+                      value={props.order.senderAddress.street}
                       onChange={(e) => props.updateOrder({
-                        path: 'sender',
-                        value: {...props.order.sender, street: e.target.value},
+                        path: 'senderAddress',
+                        value: {...props.order.senderAddress, street: e.target.value},
                       })}
                     />
                     <Form.Control.Feedback type="invalid">
@@ -86,10 +96,10 @@ function OrderCreation(props) {
                     <Form.Label>House Number</Form.Label>
                     <Form.Control
                       required
-                      value={props.order.sender.houseNr}
+                      value={props.order.senderAddress.houseNr}
                       onChange={(e) => props.updateOrder({
-                        path: 'sender',
-                        value: {...props.order.sender, houseNr: e.target.value},
+                        path: 'senderAddress',
+                        value: {...props.order.senderAddress, houseNr: e.target.value},
                       })}
                     />
                     <Form.Control.Feedback type="invalid">
@@ -100,10 +110,10 @@ function OrderCreation(props) {
                     <Form.Label>Zip Code</Form.Label>
                     <Form.Control
                       required
-                      value={props.order.sender.zipCode}
+                      value={props.order.senderAddress.zipCode}
                       onChange={(e) => props.updateOrder({
-                        path: 'sender',
-                        value: {...props.order.sender, zipCode: e.target.value},
+                        path: 'senderAddress',
+                        value: {...props.order.senderAddress, zipCode: e.target.value},
                       })}
                     />
                     <Form.Control.Feedback type="invalid">
@@ -131,10 +141,10 @@ function OrderCreation(props) {
                     <Form.Label>City</Form.Label>
                     <Form.Control
                       required
-                      value={props.order.recipient.city}
+                      value={props.order.recipientAddress.city}
                       onChange={(e) => props.updateOrder({
-                        path: 'recipient',
-                        value: {...props.order.recipient, city: e.target.value},
+                        path: 'recipientAddress',
+                        value: {...props.order.recipientAddress, city: e.target.value},
                       })}
                     />
                     <Form.Control.Feedback type="invalid">
@@ -145,10 +155,10 @@ function OrderCreation(props) {
                     <Form.Label>Street</Form.Label>
                     <Form.Control
                       required
-                      value={props.order.recipient.street}
+                      value={props.order.recipientAddress.street}
                       onChange={(e) => props.updateOrder({
-                        path: 'recipient',
-                        value: {...props.order.recipient, street: e.target.value},
+                        path: 'recipientAddress',
+                        value: {...props.order.recipientAddress, street: e.target.value},
                       })}
                     />
                     <Form.Control.Feedback type="invalid">
@@ -159,10 +169,10 @@ function OrderCreation(props) {
                     <Form.Label>House Number</Form.Label>
                     <Form.Control
                       required
-                      value={props.order.recipient.houseNr}
+                      value={props.order.recipientAddress.houseNr}
                       onChange={(e) => props.updateOrder({
-                        path: 'recipient',
-                        value: {...props.order.recipient, houseNr: e.target.value},
+                        path: 'recipientAddress',
+                        value: {...props.order.recipientAddress, houseNr: e.target.value},
                       })}
                     />
                     <Form.Control.Feedback type="invalid">
@@ -173,10 +183,10 @@ function OrderCreation(props) {
                     <Form.Label>Zip Code</Form.Label>
                     <Form.Control
                       required
-                      value={props.order.recipient.zipCode}
+                      value={props.order.recipientAddress.zipCode}
                       onChange={(e) => props.updateOrder({
-                        path: 'recipient',
-                        value: {...props.order.recipient, zipCode: e.target.value},
+                        path: 'recipientAddress',
+                        value: {...props.order.recipientAddress, zipCode: e.target.value},
                       })}
                     />
                     <Form.Control.Feedback type="invalid">

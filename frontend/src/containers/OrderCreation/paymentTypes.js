@@ -1,14 +1,14 @@
 export default [
   {
     displayName: 'PayPal',
-    value: 'paypal',
+    value: 'PAYPAL',
   },
   {
-    displayName: 'Credit card',
-    value: 'credit_card',
+    displayName: 'Credit or debit card',
+    value: 'CARD',
   },
   {
     displayName: 'Cash',
-    value: 'cash',
+    value: 'CASH',
   },
 ]
