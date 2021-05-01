@@ -3,17 +3,22 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 import React, {useEffect, useState} from 'react';
 import paymentTypes from './paymentTypes';
 import './OrderCreation.css';
 import {connect} from 'react-redux';
-import {updateOrder} from '../../state/order/orderActions';
+import {resetOrder, updateOrder} from '../../state/order/orderActions';
 import axios from '../../utils/axios';
+import {setError} from '../../state/error/errorActions';
+import CheckCircle from '../../assets/checkCircle.svg'
+import {withRouter} from 'react-router-dom';
 
 
 function OrderCreation(props) {
 
   const [validated, setValidated] = useState(false);
+  const [orderCreated, setOrderCreated] = useState(false);
 
   useEffect(() => {
     props.updateOrder({
@@ -35,13 +40,31 @@ function OrderCreation(props) {
         userId: props.user.id,
         courierCompanyId: props.services.id,
       });
+      setOrderCreated(true);
+      setValidated(false);
+      props.resetOrder();
     } catch (error) {
-      console.log('shit')
+      props.setError({ error: true, message: `Order creation error: ${error}` });
     }
   }
 
   return (
-    <div className="Login">
+    <Container className="py-5">
+      <Modal show={orderCreated} >
+        <Modal.Header>
+          <Modal.Title>Order creation successful</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Row className="justify-content-center">
+            <img className={'checkmark'} src={CheckCircle} alt="Checkmark" />
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={() => {props.history.push('/orders')}}>
+            Continue
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <Container>
         <Row className="justify-content-center">
           <Col sm="16" md="12" lg="10" xl="8">
@@ -206,8 +229,9 @@ function OrderCreation(props) {
                         value: p.value,
                       })}
                       noGutters={true}
+                      style={{ width: '100%' }}
                     >
-                      <Col sm="16" md="12" lg="10" xl="8">
+                      <Col>
                         <Form.Check
                           id={p.value}
                           type="checkbox"
@@ -216,19 +240,21 @@ function OrderCreation(props) {
                           readOnly={true}
                         />
                       </Col>
-                      <Col sm="16" md="12" lg="10" xl="8"> {p.displayName} </Col>
+                      {/*<Col xs={8} className="text-left" style={{ fontSize: '15px' }}> {p.displayName} </Col>*/}
+                      <Col> {p.displayName}</Col>
                     </Row>
                   )
                 }
               </Row>
-              <Button block size="lg" type="submit">
-                Order
-              </Button>
+              <Row className="pt-3 justify-content-between">
+                <Button onClick={ () => props.history.goBack()}>Back</Button>
+                <Button onClick={ () => {} }>Submit</Button>
+              </Row>
             </Form>
           </Col>
         </Row>
       </Container>
-    </div>);
+    </Container>);
 }
 
 const mapStateToProps = (state) => {
@@ -239,4 +265,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, {updateOrder})(OrderCreation);
+export default connect(mapStateToProps, {updateOrder, setError, resetOrder})(withRouter(OrderCreation));
