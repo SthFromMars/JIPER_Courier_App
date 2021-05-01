@@ -1,0 +1,14 @@
+{
+    "userId": 19,
+    "email": "email",
+    "password": "password",
+    "firstName": "firstName",
+    "lastName": "lastName",
+    "phoneNumber": "phoneNumber",
+    "address": {
+        "city": "city",
+        "street": "street",
+        "houseNr": "houseNr",
+        "zipCode": "zipCode"
+    }
+} 
