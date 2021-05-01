@@ -3,7 +3,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import paymentTypes from './paymentTypes';
 import './OrderCreation.css';
 import {connect} from 'react-redux';
@@ -12,10 +12,14 @@ import {updateOrder} from '../../state/order/orderActions';
 
 function OrderCreation(props) {
 
-  // if(!props.order.paymentType)
-  //   props.updateOrder('paymentType', paymentTypes[0])
-
   const [validated, setValidated] = useState(false);
+
+  useEffect(() => {
+    props.updateOrder({
+      path: 'sender',
+      value: props.user.address,
+    })
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -26,7 +30,7 @@ function OrderCreation(props) {
     }
   }
 
-  console.log(JSON.stringify(props.order, null, 2))
+  console.log(JSON.stringify(props.user, null, 2))
 
   return (
     <div className="Login">
@@ -47,7 +51,7 @@ function OrderCreation(props) {
                     <Form.Control
                       required
                       disabled
-                      value={props.user.name}
+                      value={props.user.firstName + ' ' + props.user.lastName}
                     />
                   </Form.Group>
                   <Form.Group size="lg" controlId="senderCity">
@@ -120,7 +124,7 @@ function OrderCreation(props) {
                       })}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Please provide your name
+                      Please provide recipient&apos;s name
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group size="lg" controlId="recipientCity">
@@ -134,7 +138,7 @@ function OrderCreation(props) {
                       })}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Please provide your city
+                      Please provide recipient&apos;s city
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group size="lg" controlId="recipientStreet">
@@ -148,7 +152,7 @@ function OrderCreation(props) {
                       })}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Please provide your street
+                      Please provide recipient&apos;s street
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group size="lg" controlId="recipientHouseNr">
@@ -162,7 +166,7 @@ function OrderCreation(props) {
                       })}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Please provide your house number
+                      Please provide recipient&apos;s house number
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group size="lg" controlId="recipientZipCode">
@@ -176,7 +180,7 @@ function OrderCreation(props) {
                       })}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Please provide your zip code
+                      Please provide recipient&apos;s zip code
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
