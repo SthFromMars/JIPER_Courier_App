@@ -67,15 +67,15 @@ function OrderCreation(props) {
       </Modal>
       <Container>
         <Row className="justify-content-center">
-          <Col sm="16" md="12" lg="10" xl="8">
+          <Col sm="20" md="14" lg="12" xl="10">
             <h4>
               <span style={{color: 'var(--primary)'}}>
                 {props.services.name}
               </span> Delivery Services
             </h4>
             <Form noValidate validated={validated} onSubmit={handleSubmit} >
-              <Row className="justify-content-center">
-                <Col sm="10" md="8" lg="7" xl="6">
+              <Row className="justify-content-between">
+                <Col sm="9" md="7" lg="6" xl="5">
                   <h4>Sender</h4>
                   <Form.Group size="lg" controlId="senderName">
                     <Form.Label>Name</Form.Label>
@@ -142,7 +142,7 @@ function OrderCreation(props) {
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
-                <Col sm="10" md="8" lg="7" xl="6">
+                <Col  sm="9" md="7" lg="6" xl="5">
                   <h4>Recipient</h4>
                   <Form.Group size="lg" controlId="recipientName">
                     <Form.Label>Name</Form.Label>
@@ -222,16 +222,15 @@ function OrderCreation(props) {
                   paymentTypes.map(p =>
                     <Row
                       key={p.value}
-                      className={`select-element text-center 
+                      className={`select-element justify-content-between payment-type-row
                       ${props.order.paymentType === p.value ? 'selected' : ''}`}
                       onClick={() => props.updateOrder({
                         path: 'paymentType',
                         value: p.value,
                       })}
                       noGutters={true}
-                      style={{ width: '100%' }}
                     >
-                      <Col>
+                      <Col className={'check-col'}>
                         <Form.Check
                           id={p.value}
                           type="checkbox"
@@ -240,7 +239,6 @@ function OrderCreation(props) {
                           readOnly={true}
                         />
                       </Col>
-                      {/*<Col xs={8} className="text-left" style={{ fontSize: '15px' }}> {p.displayName} </Col>*/}
                       <Col> {p.displayName}</Col>
                     </Row>
                   )
@@ -248,7 +246,7 @@ function OrderCreation(props) {
               </Row>
               <Row className="pt-3 justify-content-between">
                 <Button onClick={ () => props.history.goBack()}>Back</Button>
-                <Button onClick={ () => {} }>Submit</Button>
+                <Button type="submit">Submit</Button>
               </Row>
             </Form>
           </Col>
