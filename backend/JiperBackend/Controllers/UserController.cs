@@ -183,12 +183,16 @@ namespace JiperBackend.Controllers
         public IActionResult ResolveConflict([FromBody] JObject data)
         {
             User user = null;
-            bool overwrite = false;
             try
             {
-                overwrite = data["overwrite"].ToObject<bool>();
+                bool overwrite = data["overwrite"].ToObject<bool>();
                 int userId = data["userId"].ToObject<int>();
                 user = userService.GetUser(userId) ?? throw new ArgumentNullException();
+                // if overwrite == false just return refreshed user info
+                if (!overwrite)
+                {
+                    return Ok(user);
+                }
                 user.Email = data["email"].ToObject<string>();
                 user.Password = data["password"].ToObject<string>();
                 user.FirstName = data["firstName"].ToObject<string>();
@@ -211,17 +215,9 @@ namespace JiperBackend.Controllers
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                if (overwrite)
-                {
-                    var entry = ex.Entries.Single();
-                    entry.OriginalValues.SetValues(entry.GetDatabaseValues());
-                    userService.SaveChanges();
-                }
-                else
-                {
-                    ex.Entries.Single().Reload();
-                    userService.SaveChanges();
-                }
+                var entry = ex.Entries.Single();
+                entry.OriginalValues.SetValues(entry.GetDatabaseValues());
+                userService.SaveChanges();
             }
             return Ok(user);
         }
