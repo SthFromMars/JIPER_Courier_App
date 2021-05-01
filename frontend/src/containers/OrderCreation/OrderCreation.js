@@ -16,6 +16,15 @@ import {withRouter} from 'react-router-dom';
 
 
 function OrderCreation(props) {
+  // check if required order fields are set
+  if(
+    (!props.order.packageId && props.order.packageId !==0) ||
+    !props.order.services ||
+    (!props.services.id && props.services.id !==0)
+  ) {
+    props.history.push('/services')
+  }
+
 
   const [validated, setValidated] = useState(false);
   const [orderCreated, setOrderCreated] = useState(false);

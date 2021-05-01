@@ -5,14 +5,14 @@ const initialState = {
   // Tracked order state
   services: [],
   packageId: null,
-  senderAddress: { // address
+  senderAddress: {
     city: '',
     street: '',
     houseNr: '',
     zipCode: '',
   },
   recipientName: '',
-  recipientAddress: { // address
+  recipientAddress: {
     city: '',
     street: '',
     houseNr: '',

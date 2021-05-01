@@ -60,6 +60,7 @@ namespace JiperBackend.Controllers
             {
                 return NotFound();
             }
+            
             return Ok(user);
         }
 
@@ -93,9 +94,8 @@ namespace JiperBackend.Controllers
                 order = new Order(date, paymentType, package, senderName, senderAddress, recipientName, recipientAddress, services);
                 userService.AddOrder(userId, order);
             }
-            catch (NullReferenceException ex)
+            catch (NullReferenceException)
             {
-                Console.WriteLine(ex.ToString());
                 return BadRequest();
             }
             catch (ArgumentNullException)

@@ -49,7 +49,7 @@ class Services extends React.Component {
   }
 
   // eslint-disable-next-line no-unused-vars
-  handleNext(event) { // TODO: add routing or remove this when implementing next part
+  handleNext(event) {
     this.props.history.push('/order_creation')
   }
 
