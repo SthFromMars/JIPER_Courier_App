@@ -3,6 +3,7 @@ import Notification from '../Notification/Notification'
 import Navigationbar from '../../components/Navigationbar/Navigationbar'
 import Home from '../Home/Home'
 import Services from '../Services/Services'
+import Orders from '../Orders/Orders'
 import { Provider } from 'react-redux';
 import getStore from '../../state/store';
 import {
@@ -30,6 +31,9 @@ function App() {
           </Route>
           <Route exact path="/services">
             <Services/>
+          </Route>
+          <Route exact path="/orders">
+            <Orders/>
           </Route>
         </Switch>
       </Router>
