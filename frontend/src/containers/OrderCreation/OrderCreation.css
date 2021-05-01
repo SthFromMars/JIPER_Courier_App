@@ -1,0 +1,22 @@
+.select-element {
+    font-size: large;
+    border: solid 1px rgba(216, 203, 203, 150);
+    padding: 6px 0px;
+    margin-bottom: 2px;
+    border-radius: 5px;
+}
+
+.selected {
+    border: solid 2px var(--primary);
+    background-color: rgba(0, 123, 255, 0.15);
+}
+
+input[type=checkbox]
+{
+    /* Double-sized Checkboxes */
+    -ms-transform: scale(1.5); /* IE */
+    -moz-transform: scale(1.5); /* FF */
+    -webkit-transform: scale(1.5); /* Safari and Chrome */
+    -o-transform: scale(1.5); /* Opera */
+    padding: 10px;
+}

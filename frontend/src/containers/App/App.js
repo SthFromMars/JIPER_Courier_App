@@ -11,6 +11,7 @@ import {
   Route,
 } from 'react-router-dom';
 import Register from '../Register/Register';
+import OrderCreation from '../OrderCreation/OrderCreation';
 
 function App() {
 
@@ -30,6 +31,9 @@ function App() {
           </Route>
           <Route exact path="/services">
             <Services/>
+          </Route>
+          <Route exact path="/order_creation">
+            <OrderCreation/>
           </Route>
         </Switch>
       </Router>
