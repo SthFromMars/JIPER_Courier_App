@@ -11,6 +11,7 @@ import './Services.css';
 import PropTypes from 'prop-types';
 import { loadServices } from '../../state/services/servicesActions'
 import { updateOrder } from '../../state/order/orderActions'
+import { withRouter } from 'react-router-dom'
 
 
 class Services extends React.Component {
@@ -49,8 +50,8 @@ class Services extends React.Component {
   }
 
   // eslint-disable-next-line no-unused-vars
-  handleNext(event) { // TODO: add routing or remove this when implementing next part
-    console.log(this.props.order)
+  handleNext(event) {
+    this.props.history.push('/order_creation')
   }
 
 
@@ -171,4 +172,4 @@ Notification.propTypes = {
   order: PropTypes.object.isRequired
 };
 
-export default connect(mapStateToProps, { loadServices, updateOrder })(Services)
+export default connect(mapStateToProps, { loadServices, updateOrder })(withRouter(Services))

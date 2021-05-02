@@ -1,0 +1,10 @@
+.checkmark {
+    width: 50%;
+    color: aqua;
+}
+.payment-type-row {
+    width: 100%
+}
+.check-col {
+    margin-left: 20px;
+}
