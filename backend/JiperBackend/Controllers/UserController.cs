@@ -179,7 +179,7 @@ namespace JiperBackend.Controllers
             return Ok(user);
         }
 
-        [HttpPost("resolveconflict")]
+        [HttpPost("updateinfo/refresh")]
         public IActionResult ResolveConflict([FromBody] JObject data)
         {
             User user = null;
