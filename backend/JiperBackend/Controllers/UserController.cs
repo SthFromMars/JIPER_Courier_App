@@ -5,6 +5,7 @@ using JiperBackend.Services;
 using JiperBackend.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace JiperBackend.Controllers
 {
@@ -50,7 +51,7 @@ namespace JiperBackend.Controllers
             {
                 email = data["email"].ToObject<string>();
                 password = data["password"].ToObject<string>();
-                user = userService.GetUser(email, password) ?? throw new ArgumentNullException(nameof(user)); ;
+                user = userService.GetUser(email, password) ?? throw new ArgumentNullException();
             }
             catch (NullReferenceException)
             {
@@ -141,6 +142,84 @@ namespace JiperBackend.Controllers
                 return NotFound();
             }
             return Ok(order);
+        }
+
+        [HttpPost("updateinfo")]
+        public IActionResult UpdateInfo([FromBody] JObject data)
+        {
+            User user;
+            try
+            {
+                int userId = data["userId"].ToObject<int>();
+                user = userService.GetUser(userId) ?? throw new ArgumentNullException();
+                user.Email = data["email"].ToObject<string>();
+                user.Password = data["password"].ToObject<string>();
+                user.FirstName = data["firstName"].ToObject<string>();
+                user.LastName = data["lastName"].ToObject<string>();
+                user.PhoneNumber = data["phoneNumber"].ToObject<string>();
+                Address address = data["address"].ToObject<Address>();
+                user.Address.City = address.City;
+                user.Address.Street = address.Street;
+                user.Address.HouseNr = address.HouseNr;
+                user.Address.ZipCode = address.ZipCode;
+                userService.SaveChanges();
+            }
+            catch (NullReferenceException)
+            {
+                return BadRequest();
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return Conflict("OPTIMISTIC_LOCK_ERROR");
+            }
+            return Ok(user);
+        }
+
+        [HttpPost("updateinfo/refresh")]
+        public IActionResult ResolveConflict([FromBody] JObject data)
+        {
+            User user = null;
+            try
+            {
+                bool overwrite = data["overwrite"].ToObject<bool>();
+                int userId = data["userId"].ToObject<int>();
+                user = userService.GetUser(userId) ?? throw new ArgumentNullException();
+                // if overwrite == false just return refreshed user info
+                if (!overwrite)
+                {
+                    return Ok(user);
+                }
+                user.Email = data["email"].ToObject<string>();
+                user.Password = data["password"].ToObject<string>();
+                user.FirstName = data["firstName"].ToObject<string>();
+                user.LastName = data["lastName"].ToObject<string>();
+                user.PhoneNumber = data["phoneNumber"].ToObject<string>();
+                Address address = data["address"].ToObject<Address>();
+                user.Address.City = address.City;
+                user.Address.Street = address.Street;
+                user.Address.HouseNr = address.HouseNr;
+                user.Address.ZipCode = address.ZipCode;
+                userService.SaveChanges();
+            }
+            catch (NullReferenceException)
+            {
+                return BadRequest();
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                var entry = ex.Entries.Single();
+                entry.OriginalValues.SetValues(entry.GetDatabaseValues());
+                userService.SaveChanges();
+            }
+            return Ok(user);
         }
     }
 }
