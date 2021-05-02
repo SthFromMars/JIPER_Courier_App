@@ -1,0 +1,81 @@
+[
+    {
+      "id": 2,
+      "status": "Submitted",
+      "paid": false,
+      "date": "2021-04-26T22:50:15.843725",
+      "paymentType": "CARD",
+      "price": 8.049999999999999,
+      "package": {
+        "id": 1,
+        "name": "S",
+        "price": 6.1,
+        "weight": 30,
+        "length": 64,
+        "width": 38,
+        "height": 10
+      },
+      "senderName": "string string",
+      "sender": {
+        "id": 25,
+        "city": "city",
+        "street": "str",
+        "houseNr": "1354",
+        "zipCode": "6545"
+      },
+      "recipientName": "aaa",
+      "recipient": {
+        "id": 24,
+        "city": "city",
+        "street": "str",
+        "houseNr": "1354",
+        "zipCode": "6545"
+      },
+      "services": []
+    },
+    {
+      "id": 3,
+      "status": "Submitted",
+      "paid": false,
+      "date": "2021-04-27T12:13:38.69876",
+      "paymentType": "PAYPAL",
+      "price": 14.049999999999999,
+      "package": {
+        "id": 2,
+        "name": "M",
+        "price": 7.5,
+        "weight": 30,
+        "length": 64,
+        "width": 38,
+        "height": 20
+      },
+      "senderName": "string string",
+      "sender": {
+        "id": 27,
+        "city": "city",
+        "street": "str",
+        "houseNr": "1354",
+        "zipCode": "6545"
+      },
+      "recipientName": "aaa",
+      "recipient": {
+        "id": 26,
+        "city": "city",
+        "street": "str",
+        "houseNr": "1354",
+        "zipCode": "6545"
+      },
+      "services": [
+        {
+          "id": 1,
+          "name": "Transportation of fragile package",
+          "price": 1.95
+        },
+        {
+          "id": 2,
+          "name": "Sending documents for signing",
+          "price": 4.6
+        }
+      ]
+    }
+]
