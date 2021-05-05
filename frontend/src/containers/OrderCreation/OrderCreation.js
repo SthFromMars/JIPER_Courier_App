@@ -32,7 +32,12 @@ function OrderCreation(props) {
   useEffect(() => {
     props.updateOrder({
       path: 'senderAddress',
-      value: props.user.address,
+      value: {
+        city: props.user.address.city,
+        street: props.user.address.street,
+        houseNr: props.user.address.houseNr,
+        zipCode: props.user.address.zipCode,
+      },
     })
   }, []);
 
@@ -51,7 +56,6 @@ function OrderCreation(props) {
       });
       setOrderCreated(true);
       setValidated(false);
-      props.resetOrder();
     } catch (error) {
       props.setError({ error: true, message: `Order creation error: ${error}` });
     }
@@ -69,7 +73,10 @@ function OrderCreation(props) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={() => {props.history.push('/orders')}}>
+          <Button variant="primary" onClick={() => {
+            props.history.push('/orders')
+            props.resetOrder()
+          }}>
             Continue
           </Button>
         </Modal.Footer>
