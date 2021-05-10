@@ -1,6 +1,5 @@
 {
     "paymentType": "CARD",
-    "userId": "7",
     "senderAddress": {
         "city": "city",
         "street": "str",
