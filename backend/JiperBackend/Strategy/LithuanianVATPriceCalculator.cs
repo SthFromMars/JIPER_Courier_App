@@ -1,4 +1,5 @@
 ﻿using JiperBackend.Models;
+using System;
 
 namespace JiperBackend.Strategy
 {
@@ -13,7 +14,7 @@ namespace JiperBackend.Strategy
                 price += service.Price;
             }
 
-            price += price * 0.21;
+            price += Math.Round(price * 0.21, 2, MidpointRounding.AwayFromZero);
 
             return price;
         }
