@@ -228,5 +228,26 @@ namespace JiperBackend.Controllers
             }
             return Ok(user);
         }
+
+        [HttpGet("userinfo")]
+        public IActionResult GetInfo()
+        {
+            User user;
+            try
+            {
+                int userId = ((User)HttpContext.Items["User"]).Id;
+                user = userService.GetUser(userId) ?? throw new ArgumentNullException();
+            }
+            catch (NullReferenceException)
+            {
+                return BadRequest();
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
+        }
     }
 }
