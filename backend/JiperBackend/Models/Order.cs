@@ -24,27 +24,6 @@ namespace JiperBackend.Models
         public Address Recipient { get; set; }
         public List<Service> Services { get; set; }
 
-        public Order(DateTime date, string paymentType, Package package, string senderName, Address sender, string recipientName, Address recipient, List<Service> services)
-        {
-            Paid = false;
-            Date = date;
-            PaymentType = paymentType;
-            Status = "Submitted";
-            Package = package;
-            SenderName = senderName;
-            Sender = sender;
-            RecipientName = recipientName;
-            Recipient = recipient;
-            Services = services;
-
-            Price = package.Price;
-
-            foreach (Service service in services)
-            {
-                Price += service.Price;
-            }
-        }
-
         public Order(DateTime date, string paymentType, Package package, string senderName, Address sender, string recipientName, Address recipient, List<Service> services, IPriceCalculator priceCalculator)
         {
             Paid = false;
