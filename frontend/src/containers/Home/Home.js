@@ -56,6 +56,23 @@ class Home extends React.Component {
           </Button>
         </Col>
       </Row>
+      <Row noGutters={true} className="justify-content-center mt-2">
+        <Col sm="8" md="6" lg="5" xl="4">
+          <Button
+            className="text-left navigation-block-btn"
+            variant="outline-primary"
+            block
+            onClick={(evt) => this.goTo('/profile', evt)}
+          >
+            <div style={{ color: 'black' }}>
+              <b>Profile</b>
+            </div>
+            <div style={{ color: 'black' }}>
+              Change your email, password or address
+            </div>
+          </Button>
+        </Col>
+      </Row>
     </Container>
   }
 }

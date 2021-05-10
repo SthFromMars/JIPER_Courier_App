@@ -11,6 +11,7 @@ import {connect} from 'react-redux';
 import {resetOrder, updateOrder} from '../../state/order/orderActions';
 import axios from '../../utils/axios';
 import {setError} from '../../state/error/errorActions';
+import {showSuccess} from '../../state/notification/notificationActions'
 import CheckCircle from '../../assets/checkCircle.svg'
 import {withRouter} from 'react-router-dom';
 
@@ -54,6 +55,7 @@ function OrderCreation(props) {
         userId: props.user.id,
         courierCompanyId: props.services.id,
       });
+      props.showSuccess('Order placed')
       setOrderCreated(true);
       setValidated(false);
     } catch (error) {
@@ -279,4 +281,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, {updateOrder, setError, resetOrder})(withRouter(OrderCreation));
+export default connect(mapStateToProps, {updateOrder, setError, resetOrder, showSuccess})(withRouter(OrderCreation));

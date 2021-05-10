@@ -4,6 +4,7 @@ import Navigationbar from '../../components/Navigationbar/Navigationbar'
 import Home from '../Home/Home'
 import Services from '../Services/Services'
 import Orders from '../Orders/Orders'
+import Profile from '../Profile/Profile'
 import { Provider } from 'react-redux';
 import getStore from '../../state/store';
 import {
@@ -38,6 +39,9 @@ function App() {
           </Route>
           <Route exact path="/orders">
             <Orders/>
+          </Route>
+          <Route exact path="/profile">
+            <Profile/>
           </Route>
         </Switch>
       </Router>

@@ -60,7 +60,7 @@ class Services extends React.Component {
       <Row noGutters={true}>
         <Col className="text-left py-3">
           <Link 
-            className="text-left navigation-block-btn btn btn-outline-primary" 
+            className="text-left light-up-btn btn btn-outline-primary" 
             style={{ color: 'black' }} 
             to="/home"
           >

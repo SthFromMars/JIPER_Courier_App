@@ -1,0 +1,14 @@
+
+
+.light-up-btn, .light-up-btn--off {
+  color: black !important;
+  border: solid 2px var(--gray) !important;
+  font-weight: bold !important;
+}
+
+.light-up-btn:hover, .light-up-btn--on {
+  border: solid 2px var(--primary) !important;
+  color: black !important;
+  background-color: rgba(0, 123, 255, 0.15) !important;
+  font-weight: bold !important;
+}
