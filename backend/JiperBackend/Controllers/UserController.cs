@@ -6,6 +6,7 @@ using JiperBackend.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using JiperBackend.Helpers;
 
 namespace JiperBackend.Controllers
 {
@@ -15,15 +16,15 @@ namespace JiperBackend.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService userService;
-        public UserController(UserService dataLoader)
+        public UserController(UserService userService)
         {
-            this.userService = dataLoader;
+            this.userService = userService;
         }
 
         [HttpPost("register")]
         public IActionResult Add([FromBody] JObject data)
         {
-            User user;
+            AuthenticateResponse response;
             try
             {
                 string email = data["email"].ToObject<string>();
@@ -32,27 +33,25 @@ namespace JiperBackend.Controllers
                 string lastName = data["lastName"].ToObject<string>();
                 string phoneNumber = data["phoneNumber"].ToObject<string>();
                 Address address = data["address"].ToObject<Address>();
-                user = new User(email, password, firstName, lastName, phoneNumber, address);
+                User user = new User(email, password, firstName, lastName, phoneNumber, address);
+                response = userService.AddUser(user);
             }
             catch (NullReferenceException)
             {
                 return BadRequest();
             }
-            userService.AddUser(user);
-            return Ok(user);
+            return Ok(response);
         }
 
         [HttpPost("login")]
         public IActionResult Login([FromBody] JObject data)
         {
-            User user;
-            string email, password;
-
+            AuthenticateResponse response;
             try
             {
-                email = data["email"].ToObject<string>();
-                password = data["password"].ToObject<string>();
-                user = userService.GetUser(email, password) ?? throw new ArgumentNullException();
+                string email = data["email"].ToObject<string>();
+                string password = data["password"].ToObject<string>();
+                response = userService.Authenticate(email, password);
             }
             catch (NullReferenceException)
             {
@@ -63,9 +62,10 @@ namespace JiperBackend.Controllers
                 return NotFound();
             }
             
-            return Ok(user);
+            return Ok(response);
         }
 
+        [Authorize]
         [HttpPost("neworder")]
         public IActionResult AddOrder([FromBody] JObject data, [FromServices] CourierCompanyService courierCompanyService)
         {
@@ -77,7 +77,7 @@ namespace JiperBackend.Controllers
                 DateTime date = DateTime.Now;
                 string paymentType = data["paymentType"].ToObject<string>();
 
-                int userId = data["userId"].ToObject<int>();
+                int userId = ((User)HttpContext.Items["User"]).Id;
                 User sender = userService.GetUser(userId);
                 string senderName = sender.FirstName + " " + sender.LastName;
                 
@@ -111,13 +111,15 @@ namespace JiperBackend.Controllers
             return Ok(order);
         }
 
-        [HttpGet("{id}/orders")]
-        public IActionResult GetOrders(int id)
+        [Authorize]
+        [HttpGet("orders")]
+        public IActionResult GetOrders()
         {
             List<Order> orders;
             try
             {
-                orders = userService.GetOrders(id);
+                int userId = ((User)HttpContext.Items["User"]).Id;
+                orders = userService.GetOrders(userId);
             }
             catch (ArgumentNullException)
             {
@@ -126,12 +128,14 @@ namespace JiperBackend.Controllers
             return Ok(orders);
         }
 
-        [HttpGet("{userId}/orders/{orderId}")]
-        public IActionResult GetOrder(int userId, int orderId)
+        [Authorize]
+        [HttpGet("orders/{orderId}")]
+        public IActionResult GetOrder(int orderId)
         {
             Order order;
             try
             {
+                int userId = ((User)HttpContext.Items["User"]).Id;
                 order = userService.GetOrder(userId, orderId);
             }
             catch (ArgumentNullException)
@@ -145,13 +149,14 @@ namespace JiperBackend.Controllers
             return Ok(order);
         }
 
+        [Authorize]
         [HttpPost("updateinfo")]
         public IActionResult UpdateInfo([FromBody] JObject data)
         {
             User user;
             try
             {
-                int userId = data["userId"].ToObject<int>();
+                int userId = ((User)HttpContext.Items["User"]).Id;
                 user = userService.GetUser(userId) ?? throw new ArgumentNullException();
                 user.Email = data["email"].ToObject<string>();
                 user.Password = data["password"].ToObject<string>();
@@ -180,14 +185,15 @@ namespace JiperBackend.Controllers
             return Ok(user);
         }
 
+        [Authorize]
         [HttpPost("updateinfo/refresh")]
         public IActionResult ResolveConflict([FromBody] JObject data)
         {
             User user = null;
             try
             {
+                int userId = ((User)HttpContext.Items["User"]).Id;
                 bool overwrite = data["overwrite"].ToObject<bool>();
-                int userId = data["userId"].ToObject<int>();
                 user = userService.GetUser(userId) ?? throw new ArgumentNullException();
                 // if overwrite == false just return refreshed user info
                 if (!overwrite)
