@@ -158,6 +158,18 @@ namespace JiperBackend.Controllers
             {
                 int userId = ((User)HttpContext.Items["User"]).Id;
                 user = userService.GetUser(userId) ?? throw new ArgumentNullException();
+
+                uint version = data["xmin"].ToObject<uint>();
+                bool overwrite = false;
+                if (data.ContainsKey("overwrite"))
+                {
+                    overwrite = data["overwrite"].ToObject<bool>();
+                }
+                if(version != user.xmin && overwrite == false)
+                {
+                    return Conflict(user);
+                }
+
                 user.Email = data["email"].ToObject<string>();
                 user.Password = data["password"].ToObject<string>();
                 user.FirstName = data["firstName"].ToObject<string>();
@@ -181,50 +193,6 @@ namespace JiperBackend.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 return Conflict("OPTIMISTIC_LOCK_ERROR");
-            }
-            return Ok(user);
-        }
-
-        [Authorize]
-        [HttpPost("updateinfo/refresh")]
-        public IActionResult ResolveConflict([FromBody] JObject data)
-        {
-            User user = null;
-            try
-            {
-                int userId = ((User)HttpContext.Items["User"]).Id;
-                bool overwrite = data["overwrite"].ToObject<bool>();
-                user = userService.GetUser(userId) ?? throw new ArgumentNullException();
-                // if overwrite == false just return refreshed user info
-                if (!overwrite)
-                {
-                    return Ok(user);
-                }
-                user.Email = data["email"].ToObject<string>();
-                user.Password = data["password"].ToObject<string>();
-                user.FirstName = data["firstName"].ToObject<string>();
-                user.LastName = data["lastName"].ToObject<string>();
-                user.PhoneNumber = data["phoneNumber"].ToObject<string>();
-                Address address = data["address"].ToObject<Address>();
-                user.Address.City = address.City;
-                user.Address.Street = address.Street;
-                user.Address.HouseNr = address.HouseNr;
-                user.Address.ZipCode = address.ZipCode;
-                userService.SaveChanges();
-            }
-            catch (NullReferenceException)
-            {
-                return BadRequest();
-            }
-            catch (ArgumentNullException)
-            {
-                return NotFound();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                var entry = ex.Entries.Single();
-                entry.OriginalValues.SetValues(entry.GetDatabaseValues());
-                userService.SaveChanges();
             }
             return Ok(user);
         }

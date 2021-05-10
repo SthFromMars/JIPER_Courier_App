@@ -16,6 +16,7 @@ namespace JiperBackend.Models
         public string PhoneNumber { get; set; }
         public Address Address { get; set; }
         public List<Order> Orders { get; set; }
+        public uint xmin { get; }
 
         public User(string email, string password, string firstName, string lastName, string phoneNumber, Address address)
         {
