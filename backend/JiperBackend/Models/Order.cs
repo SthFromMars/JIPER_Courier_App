@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
+using JiperBackend.Strategy;
 
 namespace JiperBackend.Models
 {
@@ -42,6 +43,21 @@ namespace JiperBackend.Models
             {
                 Price += service.Price;
             }
+        }
+
+        public Order(DateTime date, string paymentType, Package package, string senderName, Address sender, string recipientName, Address recipient, List<Service> services, IPriceCalculator priceCalculator)
+        {
+            Paid = false;
+            Date = date;
+            PaymentType = paymentType;
+            Status = "Submitted";
+            Package = package;
+            SenderName = senderName;
+            Sender = sender;
+            RecipientName = recipientName;
+            Recipient = recipient;
+            Services = services;
+            Price = priceCalculator.CalculatePrice(this);
         }
 
         public Order()

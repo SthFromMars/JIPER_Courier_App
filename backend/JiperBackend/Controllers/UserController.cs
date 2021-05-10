@@ -6,6 +6,7 @@ using JiperBackend.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using JiperBackend.Strategy;
 
 namespace JiperBackend.Controllers
 {
@@ -92,7 +93,17 @@ namespace JiperBackend.Controllers
                 recipientAddress = data["recipientAddress"].ToObject<Address>();
                 senderAddress = data["senderAddress"].ToObject<Address>();
 
-                order = new Order(date, paymentType, package, senderName, senderAddress, recipientName, recipientAddress, services);
+                bool addVAT = false; //data["VAT"].ToObject<bool>();
+
+                if(addVAT)
+                {
+                    order = new Order(date, paymentType, package, senderName, senderAddress, recipientName, recipientAddress, services, new LithuanianVATPriceCalculator());
+                }
+                else
+                {
+                    order = new Order(date, paymentType, package, senderName, senderAddress, recipientName, recipientAddress, services, new NoVATPriceCalculator());
+                }
+                
                 userService.AddOrder(userId, order);
             }
             catch (NullReferenceException)
