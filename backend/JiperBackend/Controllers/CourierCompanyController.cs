@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using JiperBackend.Services;
 using JiperBackend.Models;
+using JiperBackend.Helpers;
 
 namespace JiperBackend.Controllers
 {
@@ -18,6 +16,7 @@ namespace JiperBackend.Controllers
             this.courierCompanyService = dataLoader;
         }
 
+        [Authorize]
         [HttpGet("courier/{id}")]
         public IActionResult GetCourierCompany(int id)
         {
