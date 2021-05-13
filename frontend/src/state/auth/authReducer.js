@@ -1,4 +1,4 @@
-import { SET_USER_DATA } from './authTypes'
+import {LOGOUT, SET_USER_DATA} from './authTypes'
 
 const initialState = {
   loggedIn: false,
@@ -12,6 +12,11 @@ export default function authReducer(state = initialState, action) {
       return {
         loggedIn: true,
         user: action.payload
+      }
+    case LOGOUT:
+      return {
+        loggedIn: false,
+        user: {}
       }
     default:
       return state

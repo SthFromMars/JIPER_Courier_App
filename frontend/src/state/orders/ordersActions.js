@@ -3,10 +3,9 @@ import axios from '../../utils/axios'
 import { setError } from '../error/errorActions'
 
 export function loadOrderHistory() {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     try {
-      const { auth } = getState()
-      const res = await axios.get(`/User/${auth.user.id}/orders`);
+      const res = await axios.get('/User/orders');
       dispatch(setOrders(res.data));
       return res;
     } catch (error) {

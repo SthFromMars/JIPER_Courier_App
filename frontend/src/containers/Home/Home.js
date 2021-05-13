@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button';
 import { connect } from 'react-redux';
 import './Home.css';
 import { withRouter } from 'react-router-dom';
+import {logout} from '../../state/auth/authActions';
 
 class Home extends React.Component {
   constructor(props) {
@@ -73,9 +74,26 @@ class Home extends React.Component {
           </Button>
         </Col>
       </Row>
+      <Row noGutters={true} className="justify-content-center mt-2">
+        <Col sm="8" md="6" lg="5" xl="4">
+          <Button
+            className="text-left navigation-block-btn"
+            variant="outline-primary"
+            block
+            onClick={this.props.logout}
+          >
+            <div style={{ color: 'black' }}>
+              <b>Log out</b>
+            </div>
+            <div style={{ color: 'black' }}>
+              Log out of your account
+            </div>
+          </Button>
+        </Col>
+      </Row>
     </Container>
   }
 }
 
 const routedHome = withRouter(Home);
-export default connect()(routedHome)
+export default connect(null, {logout})(routedHome)
