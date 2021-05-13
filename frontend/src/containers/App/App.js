@@ -10,7 +10,6 @@ import getStore from '../../state/store';
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
 } from 'react-router-dom';
 import Register from '../Register/Register';
 import OrderCreation from '../OrderCreation/OrderCreation';
