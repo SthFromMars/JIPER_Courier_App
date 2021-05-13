@@ -14,6 +14,8 @@ import {
 } from 'react-router-dom';
 import Register from '../Register/Register';
 import OrderCreation from '../OrderCreation/OrderCreation';
+import PrivateRoute from '../Routes/PrivateRoute';
+import PublicRoute from '../Routes/PublicRoute';
 
 function App() {
 
@@ -22,27 +24,27 @@ function App() {
       <Navigationbar/>
       <Router>
         <Switch>
-          <Route exact path="/">
+          <PublicRoute exact path="/">
             <Login/>
-          </Route>
-          <Route exact path="/register">
+          </PublicRoute>
+          <PublicRoute exact path="/register">
             <Register/>
-          </Route>
-          <Route exact path="/home">
+          </PublicRoute>
+          <PrivateRoute exact path="/home">
             <Home/>
-          </Route>
-          <Route exact path="/services">
+          </PrivateRoute>
+          <PrivateRoute exact path="/services">
             <Services/>
-          </Route>
-          <Route exact path="/order_creation">
+          </PrivateRoute>
+          <PrivateRoute exact path="/order_creation">
             <OrderCreation/>
-          </Route>
-          <Route exact path="/orders">
+          </PrivateRoute>
+          <PrivateRoute exact path="/orders">
             <Orders/>
-          </Route>
-          <Route exact path="/profile">
+          </PrivateRoute>
+          <PrivateRoute exact path="/profile">
             <Profile/>
-          </Route>
+          </PrivateRoute>
         </Switch>
       </Router>
       <Notification/>
