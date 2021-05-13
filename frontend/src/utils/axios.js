@@ -11,5 +11,4 @@ export function updateAxiosHeader() {
   axiosInstance.defaults.headers.Authorization = 'Bearer ' + localStorage.getItem('token')
 }
 
-//TODO check if this behaves correctly after logout
 export default axiosInstance;

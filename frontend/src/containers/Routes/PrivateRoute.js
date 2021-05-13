@@ -13,7 +13,6 @@ class PrivateRoute extends React.Component {
           <Redirect to="/" />
         );
       } else {
-        //TODO: fix this endpoint being called twice
         this.props.getUserInfo(token);
         return null;
       }
