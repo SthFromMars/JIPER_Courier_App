@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using JiperBackend.Strategy;
+using Microsoft.Extensions.Configuration;
 
 namespace JiperBackend.Controllers
 {
@@ -15,9 +16,12 @@ namespace JiperBackend.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService userService;
-        public UserController(UserService dataLoader)
+        private readonly IConfiguration configuration;
+
+        public UserController(UserService dataLoader, IConfiguration configuration)
         {
             this.userService = dataLoader;
+            this.configuration = configuration;
         }
 
         [HttpPost("register")]
@@ -93,16 +97,8 @@ namespace JiperBackend.Controllers
                 recipientAddress = data["recipientAddress"].ToObject<Address>();
                 senderAddress = data["senderAddress"].ToObject<Address>();
 
-                bool addVAT = false; //data["VAT"].ToObject<bool>();
-
-                if(addVAT)
-                {
-                    order = new Order(date, paymentType, package, senderName, senderAddress, recipientName, recipientAddress, services, new LithuanianVATPriceCalculator());
-                }
-                else
-                {
-                    order = new Order(date, paymentType, package, senderName, senderAddress, recipientName, recipientAddress, services, new NoVATPriceCalculator());
-                }
+                Type vatType = Type.GetType("JiperBackend.Strategy." + configuration.GetValue<string>("VATCalculator"));
+                order = new Order(date, paymentType, package, senderName, senderAddress, recipientName, recipientAddress, services, (IPriceCalculator) Activator.CreateInstance(vatType));
                 
                 userService.AddOrder(userId, order);
             }
