@@ -1,13 +1,15 @@
-import { SET_USER_DATA } from './authTypes'
+import {LOGOUT, SET_USER_DATA} from './authTypes'
 import { setError } from '../error/errorActions'
-import { showSuccess } from '../../state/notification/notificationActions'
-import axios from '../../utils/axios'
+import { showSuccess } from '../notification/notificationActions'
+import axios, {updateAxiosHeader} from '../../utils/axios'
 
 export function login(payload) {
   return async dispatch => {
     try {
       const res = await axios.post('/User/login', payload);
-      dispatch({ type: SET_USER_DATA, payload: res.data });
+      dispatch({ type: SET_USER_DATA, payload: res.data.user });
+      localStorage.setItem('token', res.data.token);
+      updateAxiosHeader();
       dispatch(showSuccess('Logged in'));
       return res;
     } catch (error) {
@@ -17,11 +19,32 @@ export function login(payload) {
   }
 }
 
+export function logout() {
+  localStorage.removeItem('token');
+  updateAxiosHeader();
+  return { type: LOGOUT };
+}
+
+export function getUserInfo() {
+  return async dispatch => {
+    try {
+      const res = await axios.get('/User/userinfo');
+      dispatch({ type: SET_USER_DATA, payload: res.data });
+      return res;
+    } catch (error) {
+      dispatch(setError({ error: true, message: `Error getting user information: ${error}` }));
+      return error;
+    }
+  }
+}
+
 export function register(payload) {
   return async dispatch => {
     try {
       const res = await axios.post('/User/register', payload);
-      dispatch({ type: SET_USER_DATA, payload: res.data });
+      dispatch({ type: SET_USER_DATA, payload: res.data.user });
+      localStorage.setItem('token', res.data.token);
+      updateAxiosHeader();
       dispatch(showSuccess('Account created'));
       return res;
     } catch (error) {

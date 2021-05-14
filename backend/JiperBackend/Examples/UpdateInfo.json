@@ -1,5 +1,5 @@
 {
-    "userId": 19,
+    "overwrite": false,
     "email": "email",
     "password": "password",
     "firstName": "firstName",
@@ -10,5 +10,6 @@
         "street": "street",
         "houseNr": "houseNr",
         "zipCode": "zipCode"
-    }
+    },
+    "xmin": 101010101
 } 

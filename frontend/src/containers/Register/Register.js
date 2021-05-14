@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { connect, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -8,18 +8,9 @@ import Col from 'react-bootstrap/Col';
 import './Register.css';
 import Logo from '../../components/Logo/Logo';
 import { register } from '../../state/auth/authActions'
-import {Link, useHistory} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 function Register(props) {
-  // Not the ideal loggedIn handling, but will suffice for now
-  const history = useHistory();
-  const isLoggedIn = useSelector(state => state.auth.loggedIn);
-  useEffect(() => {
-    if (isLoggedIn) {
-      history.push('/home')
-    }
-  },[isLoggedIn])
-
   const [fields, setFields] = useState({
     firstName: {value: '', isValid: false},
     lastName: {value: '', isValid: false},

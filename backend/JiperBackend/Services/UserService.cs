@@ -3,6 +3,12 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using JiperBackend.Helpers;
+using Microsoft.Extensions.Options;
 
 namespace JiperBackend.Services
 {
@@ -10,11 +16,13 @@ namespace JiperBackend.Services
     {
         public DbSet<User> users;
         public readonly Context db;
+        private readonly AppSettings _appSettings;
 
-        public UserService(Context db)
+        public UserService(Context db, IOptions<AppSettings> appSettings)
         {
             this.db = db;
             users = db.Users;
+            _appSettings = appSettings.Value;
         }
 
         public void SaveChanges()
@@ -22,19 +30,27 @@ namespace JiperBackend.Services
             db.SaveChanges();
         }
 
-        public void AddUser(User user)
+        public AuthenticateResponse AddUser(User user)
         {
-            if (!users.Contains(user)) 
+            if (!users.Contains(user))
+            {
                 users.Add(user);
+            }
             SaveChanges();
+
+            var token = generateJwtToken(user);
+
+            return new AuthenticateResponse(user, token);
         }
 
-        public User GetUser(string email, string password)
+        public AuthenticateResponse Authenticate(string email, string password)
         {
-            return users
-                .Where(u => u.Email == email && u.Password == password)
+            var user = users.Where(u => u.Email == email && u.Password == password)
                 .Include(u => u.Address)
-                .FirstOrDefault();
+                .FirstOrDefault() ?? throw new ArgumentNullException();
+            var token = generateJwtToken(user);
+
+            return new AuthenticateResponse(user, token);
         }
 
         public User GetUser(int id)
@@ -85,6 +101,21 @@ namespace JiperBackend.Services
                 throw new ArgumentNullException();
             }
             return user.Orders.Where(order => order.Id == orderId).First();
+        }
+
+        private string generateJwtToken(User user)
+        {
+            // generate token that is valid for 7 days
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
     }
 }

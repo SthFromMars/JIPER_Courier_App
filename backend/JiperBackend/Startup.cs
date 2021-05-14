@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using JiperBackend.Services;
+using JiperBackend.Helpers;
 
 namespace JiperBackend
 {
@@ -31,6 +32,7 @@ namespace JiperBackend
             services.AddDbContext<Context>(options => {
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
             });
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddScoped<UserService, UserService>();
             services.AddScoped<CourierCompanyService, CourierCompanyService>();
         }
@@ -53,6 +55,8 @@ namespace JiperBackend
             app.UseCors(
                 options => options.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader()
             );
+
+            app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
