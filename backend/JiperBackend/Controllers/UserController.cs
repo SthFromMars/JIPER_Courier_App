@@ -167,11 +167,16 @@ namespace JiperBackend.Controllers
                 }
                 if(version != user.xmin && overwrite == false)
                 {
-                    return Conflict(user);
+                    return Conflict("OPTIMISTIC_LOCK_ERROR");
+                }
+
+
+               if (data.ContainsKey("password")) // Password may not be sent if it is not being changed
+                {
+                    user.Password = data["password"].ToObject<string>();
                 }
 
                 user.Email = data["email"].ToObject<string>();
-                user.Password = data["password"].ToObject<string>();
                 user.FirstName = data["firstName"].ToObject<string>();
                 user.LastName = data["lastName"].ToObject<string>();
                 user.PhoneNumber = data["phoneNumber"].ToObject<string>();
