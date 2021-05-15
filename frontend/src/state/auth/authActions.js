@@ -7,7 +7,7 @@ export function login(payload) {
   return async dispatch => {
     try {
       const res = await axios.post('/User/login', payload);
-      dispatch({ type: SET_USER_DATA, payload: res.data.user });
+      dispatch(setUserData(res.data.user));
       localStorage.setItem('token', res.data.token);
       updateAxiosHeader();
       dispatch(showSuccess('Logged in'));
@@ -42,7 +42,7 @@ export function register(payload) {
   return async dispatch => {
     try {
       const res = await axios.post('/User/register', payload);
-      dispatch({ type: SET_USER_DATA, payload: res.data.user });
+      dispatch(setUserData(res.data.user));
       localStorage.setItem('token', res.data.token);
       updateAxiosHeader();
       dispatch(showSuccess('Account created'));
@@ -54,16 +54,6 @@ export function register(payload) {
   }
 }
 
-export function updateUserInfo(payload) {
-  return async dispatch => {
-    try {
-      const res = await axios.post('/User/updateinfo', payload);
-      dispatch({ type: SET_USER_DATA, payload: res.data });
-      dispatch(showSuccess('Information updated'));
-      return res;
-    } catch (error) {
-      dispatch(setError({ error: true, message: `Update error: ${error}` }));
-      return error;
-    }
-  }
+export function setUserData(data) {
+  return { type: SET_USER_DATA, payload: data }
 }

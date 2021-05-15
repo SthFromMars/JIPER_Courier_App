@@ -12,3 +12,10 @@
   background-color: rgba(0, 123, 255, 0.15) !important;
   font-weight: bold !important;
 }
+
+.warning-block {
+  border: solid 2px var(--warning) !important;
+  border-radius: 10px !important;
+  color: black;
+  background-color: rgba(240, 209, 35, 0.15) !important;
+}
