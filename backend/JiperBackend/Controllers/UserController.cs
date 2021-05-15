@@ -119,7 +119,7 @@ namespace JiperBackend.Controllers
             try
             {
                 int userId = ((User)HttpContext.Items["User"]).Id;
-                orders = userService.GetOrders(userId);
+                orders = userService.GetOrders(userId).OrderByDescending(o => o.Date).ToList();
             }
             catch (ArgumentNullException)
             {
