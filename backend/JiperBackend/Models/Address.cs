@@ -10,6 +10,7 @@ namespace JiperBackend.Models
         public string Street { get; set; }
         public string HouseNr { get; set; }
         public string ZipCode { get; set; }
+        public uint xmin { get; }
 
         public Address(string city, string street, string houseNr, string zipCode)
         {

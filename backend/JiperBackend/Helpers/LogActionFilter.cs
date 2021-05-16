@@ -6,7 +6,6 @@ using System.IO;
 namespace JiperBackend.Helpers
 {
     public class LogActionFilter : ActionFilterAttribute
-
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {

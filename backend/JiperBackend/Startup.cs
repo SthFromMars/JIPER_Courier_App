@@ -35,6 +35,14 @@ namespace JiperBackend
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddScoped<UserService, UserService>();
             services.AddScoped<CourierCompanyService, CourierCompanyService>();
+
+            if (System.Convert.ToBoolean(Configuration.GetSection("Log").Value))
+            {
+                services.AddMvc(opts =>
+                {
+                    opts.Filters.Add(new LogActionFilter());
+                });
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

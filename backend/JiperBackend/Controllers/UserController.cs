@@ -10,7 +10,6 @@ using JiperBackend.Helpers;
 
 namespace JiperBackend.Controllers
 {
-    [LogActionFilter]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -159,13 +158,14 @@ namespace JiperBackend.Controllers
                 int userId = ((User)HttpContext.Items["User"]).Id;
                 user = userService.GetUser(userId) ?? throw new ArgumentNullException();
 
-                uint version = data["xmin"].ToObject<uint>();
+                uint userVersion = data["xmin"].ToObject<uint>();
+                uint addressVersion = data["address"]["xmin"].ToObject<uint>();
                 bool overwrite = false;
                 if (data.ContainsKey("overwrite"))
                 {
                     overwrite = data["overwrite"].ToObject<bool>();
                 }
-                if(version != user.xmin && overwrite == false)
+                if((userVersion != user.xmin || addressVersion != user.Address.xmin) && overwrite == false)
                 {
                     return Conflict("OPTIMISTIC_LOCK_ERROR");
                 }
