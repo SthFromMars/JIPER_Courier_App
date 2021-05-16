@@ -9,7 +9,8 @@
         "city": "city",
         "street": "street",
         "houseNr": "houseNr",
-        "zipCode": "zipCode"
+        "zipCode": "zipCode",
+        "xmin": 101010101
     },
     "xmin": 101010101
 } 
