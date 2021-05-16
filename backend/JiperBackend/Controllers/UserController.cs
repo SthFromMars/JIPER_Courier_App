@@ -6,6 +6,8 @@ using JiperBackend.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using JiperBackend.Strategy;
+using Microsoft.Extensions.Configuration;
 using JiperBackend.Helpers;
 
 namespace JiperBackend.Controllers
@@ -15,9 +17,12 @@ namespace JiperBackend.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService userService;
-        public UserController(UserService userService)
+        private readonly IConfiguration configuration;
+
+        public UserController(UserService dataLoader, IConfiguration configuration)
         {
-            this.userService = userService;
+            this.userService = dataLoader;
+            this.configuration = configuration;
         }
 
         [HttpPost("register")]
@@ -92,7 +97,9 @@ namespace JiperBackend.Controllers
                 recipientAddress = data["recipientAddress"].ToObject<Address>();
                 senderAddress = data["senderAddress"].ToObject<Address>();
 
-                order = new Order(date, paymentType, package, senderName, senderAddress, recipientName, recipientAddress, services);
+                Type vatType = Type.GetType("JiperBackend.Strategy." + configuration.GetValue<string>("VATCalculator"));
+                order = new Order(date, paymentType, package, senderName, senderAddress, recipientName, recipientAddress, services, (IPriceCalculator) Activator.CreateInstance(vatType));
+                
                 userService.AddOrder(userId, order);
             }
             catch (NullReferenceException)
