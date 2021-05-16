@@ -148,8 +148,10 @@ class Profile extends React.Component {
       return;
     }
     const payload = { 
-      xmin: this.props.auth.user.xmin, // version
-      address: {},
+      xmin: this.props.auth.user.xmin, // user version
+      address: {
+        xmin: this.props.auth.user.address.xmin, // address version
+      },
       overwrite: this.state.conflict, // submit called while conflct true -> overwrite
     };
     Object.keys(this.state.fields).forEach(key => {
