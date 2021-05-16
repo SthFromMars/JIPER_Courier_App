@@ -6,8 +6,11 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { updateUserInfo } from '../../state/auth/authActions'
+import { setUserData, getUserInfo } from '../../state/auth/authActions'
 import { Link } from 'react-router-dom';
+import axios from '../../utils/axios';
+import { setError } from '../../state/error/errorActions';
+import { showSuccess } from '../../state/notification/notificationActions'
 import './Profile.css'
 
 class Profile extends React.Component {
@@ -27,20 +30,24 @@ class Profile extends React.Component {
         zipCode: {value: '', isValid: false},
       },
       validated: false,
-      disabled: true
-    };
+      conflict: false, // Optimistic lock error was thrown while updating
+      updateUserInfoDisabled: true,
+      updatePasswordDisabled: true,
+    }
     this.regex = {
       email: /^.+@.+$/,
       phoneNumber: /^\+?[0-9]+$/,
     }
-    this.handleFieldChange = this.handleFieldChange.bind(this);
-    this.toggleEdit = this.toggleEdit.bind(this);
+    this.handleFieldChange = this.handleFieldChange.bind(this)
+    this.toggleUpdateUserInfo = this.toggleUpdateUserInfo.bind(this)
+    this.toggleUpdatePassword = this.toggleUpdatePassword.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.fetchChanges = this.fetchChanges.bind(this)
+    this.disableEdit = this.disableEdit.bind(this)
   }
 
-  componentDidMount() {
+  loadFromAuth() {
     const auth = this.props.auth.user
-
     this.setState((state) => 
       ({
         ...state, 
@@ -55,14 +62,49 @@ class Profile extends React.Component {
           street: {value: auth?.address?.street || '', isValid: true},
           houseNr: {value: auth?.address?.houseNr || '', isValid: true},
           zipCode: {value: auth?.address?.zipCode || '', isValid: true},
-        }
+        },
+        conflict: false,
       })
     );
   }
 
+  componentDidMount() {
+    this.loadFromAuth()
+  }
+
   // eslint-disable-next-line no-unused-vars
-  toggleEdit(evt) {
-    this.setState((state) => ({...state, disabled: !this.state.disabled}))
+  async fetchChanges(evt) {
+    await this.props.getUserInfo()
+    this.loadFromAuth()
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  toggleUpdateUserInfo(evt) {
+    this.setState((state) => ({ ...state, updateUserInfoDisabled: !this.state.updateUserInfoDisabled }))
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  toggleUpdatePassword(evt) {
+    const paswReset = { isValid: this.state.updatePasswordDisabled ? false : true, value: '' }
+    this.setState((state) => ({ 
+      ...state,
+      updatePasswordDisabled: !this.state.updatePasswordDisabled,
+      // On toggle reset password fields
+      fields: {
+        ...this.state.fields,
+        password: paswReset,
+        passwordRepeat: paswReset
+      }
+    }))
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  disableEdit(evt) {
+    this.setState((state) => ({
+      ...state,
+      updateUserInfoDisabled: true,
+      updatePasswordDisabled: true,
+    }))
   }
 
   handleFieldChange(event){
@@ -77,7 +119,7 @@ class Profile extends React.Component {
         }
         break;
       case 'password':
-        fieldsNew.password = {value, isValid: Boolean(value)};
+        fieldsNew.password = {value, isValid: value.length >= 3 && Boolean(value)};
         fieldsNew.passwordRepeat.isValid = value === this.state.fields.passwordRepeat.value && this.state.fields.passwordRepeat.value
         break;
       case 'passwordRepeat':
@@ -92,7 +134,7 @@ class Profile extends React.Component {
     this.setState((state) => ({...state, fields: fieldsNew}))
   }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
     event.preventDefault();
     this.setState((state) => {
       return {...state, validated: true};
@@ -105,16 +147,37 @@ class Profile extends React.Component {
       event.stopPropagation();
       return;
     }
-    const payload = { userId: this.props.auth.user.id, address: {} };
+    const payload = { 
+      xmin: this.props.auth.user.xmin, // user version
+      address: {
+        xmin: this.props.auth.user.address.xmin, // address version
+      },
+      overwrite: this.state.conflict, // submit called while conflct true -> overwrite
+    };
     Object.keys(this.state.fields).forEach(key => {
-      if(key === 'city' || key === 'street' || key === 'houseNr' || key === 'zipCode'){
-        payload.address[key] = this.state.fields[key].value;
-      } else {
-        payload[key] = this.state.fields[key].value;
+      if (this.state.fields[key].value) { // Only consider fields if they are truthy
+        if(key === 'city' || key === 'street' || key === 'houseNr' || key === 'zipCode'){
+          payload.address[key] = this.state.fields[key].value;
+        } else {
+          payload[key] = this.state.fields[key].value;
+        }
       }
     })
-    this.props.updateUserInfo(payload);
-    this.toggleEdit(null)
+    
+    try {
+      const res = await axios.post('/User/updateinfo', payload);
+      this.props.setUserData(res.data);
+      this.props.showSuccess('Information updated')
+      this.disableEdit(null)
+      this.loadFromAuth()
+    } catch (error) {
+      // 409 - HTTP Conflict, we use this to signify an Optimistic Lock exception occuring
+      if (error.response.status === 409 && error.response.data === 'OPTIMISTIC_LOCK_ERROR') {
+        this.setState((state) => ({...state, conflict: true}))
+      } else {
+        this.props.setError({ error: true, message: `Update error: ${error}` })
+      }
+    }
   }
 
   render() {
@@ -140,9 +203,9 @@ class Profile extends React.Component {
                 </Col>
                 <Col className="text-right">
                   <Button 
-                    className={`${this.state.disabled ? 'light-up-btn' : 'light-up-btn--on'}` }
+                    className={`${this.state.updateUserInfoDisabled ? 'light-up-btn' : 'light-up-btn--on'}` }
                     variant="outline-primary" 
-                    onClick={this.toggleEdit}
+                    onClick={this.toggleUpdateUserInfo}
                   >
                     Edit
                   </Button>
@@ -159,7 +222,7 @@ class Profile extends React.Component {
                       isValid={this.state.validated && this.state.fields.firstName.isValid}
                       isInvalid={this.state.validated && !this.state.fields.firstName.isValid}
                       onChange={this.handleFieldChange}
-                      disabled={this.state.disabled}
+                      disabled={this.state.updateUserInfoDisabled}
                     />
                     <Form.Control.Feedback type="invalid">
                       Please provide your first name
@@ -175,7 +238,7 @@ class Profile extends React.Component {
                       isValid={this.state.validated && this.state.fields.lastName.isValid}
                       isInvalid={this.state.validated && !this.state.fields.lastName.isValid}
                       onChange={this.handleFieldChange}
-                      disabled={this.state.disabled}
+                      disabled={this.state.updateUserInfoDisabled}
                     />
                     <Form.Control.Feedback type="invalid">
                       Please provide your last name
@@ -194,7 +257,7 @@ class Profile extends React.Component {
                       isValid={this.state.validated && this.state.fields.email.isValid}
                       isInvalid={this.state.validated && !this.state.fields.email.isValid}
                       onChange={this.handleFieldChange}
-                      disabled={this.state.disabled}
+                      disabled={this.state.updateUserInfoDisabled}
                     />
                     <Form.Control.Feedback type="invalid">
                       Please provide a valid email
@@ -210,7 +273,7 @@ class Profile extends React.Component {
                       isValid={this.state.validated && this.state.fields.phoneNumber.isValid}
                       isInvalid={this.state.validated && !this.state.fields.phoneNumber.isValid}
                       onChange={this.handleFieldChange}
-                      disabled={this.state.disabled}
+                      disabled={this.state.updateUserInfoDisabled}
                     />
                     <Form.Control.Feedback type="invalid">
                       Please provide a valid phone number
@@ -218,44 +281,6 @@ class Profile extends React.Component {
                   </Form.Group>
                 </Col>
               </Row>
-
-              <Row>
-                <Col sm="10" md="8" lg="7" xl="6">
-                  <Form.Group size="lg" controlId="password">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                      type="password"
-                      name={'password'}
-                      value={this.state.fields.password.value}
-                      isValid={this.state.validated && this.state.fields.password.isValid}
-                      isInvalid={this.state.validated && !this.state.fields.password.isValid}
-                      onChange={this.handleFieldChange}
-                      disabled={this.state.disabled}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Please provide a password
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                <Col sm="10" md="8" lg="7" xl="6">
-                  <Form.Group size="lg" controlId="passwordRepeat">
-                    <Form.Label>Repeat your password</Form.Label>
-                    <Form.Control
-                      type="password"
-                      name={'passwordRepeat'}
-                      value={this.state.fields.passwordRepeat.value}
-                      isValid={this.state.validated && this.state.fields.passwordRepeat.isValid}
-                      isInvalid={this.state.validated && !this.state.fields.passwordRepeat.isValid}
-                      onChange={this.handleFieldChange}
-                      disabled={this.state.disabled}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Please repeat your password
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-              </Row>
-
               <Row>
                 <Col sm="10" md="8" lg="7" xl="6">
                   <Form.Group size="lg" controlId="city">
@@ -266,7 +291,7 @@ class Profile extends React.Component {
                       isValid={this.state.validated && this.state.fields.city.isValid}
                       isInvalid={this.state.validated && !this.state.fields.city.isValid}
                       onChange={this.handleFieldChange}
-                      disabled={this.state.disabled}
+                      disabled={this.state.updateUserInfoDisabled}
                     />
                     <Form.Control.Feedback type="invalid">
                       Please provide your city
@@ -282,7 +307,7 @@ class Profile extends React.Component {
                       isValid={this.state.validated && this.state.fields.street.isValid}
                       isInvalid={this.state.validated && !this.state.fields.street.isValid}
                       onChange={this.handleFieldChange}
-                      disabled={this.state.disabled}
+                      disabled={this.state.updateUserInfoDisabled}
                     />
                     <Form.Control.Feedback type="invalid">
                       Please provide your street
@@ -301,7 +326,7 @@ class Profile extends React.Component {
                       isValid={this.state.validated && this.state.fields.houseNr.isValid}
                       isInvalid={this.state.validated && !this.state.fields.houseNr.isValid}
                       onChange={this.handleFieldChange}
-                      disabled={this.state.disabled}
+                      disabled={this.state.updateUserInfoDisabled}
                     />
                     <Form.Control.Feedback type="invalid">
                       Please provide your house number
@@ -317,7 +342,7 @@ class Profile extends React.Component {
                       isValid={this.state.validated && this.state.fields.zipCode.isValid}
                       isInvalid={this.state.validated && !this.state.fields.zipCode.isValid}
                       onChange={this.handleFieldChange}
-                      disabled={this.state.disabled}
+                      disabled={this.state.updateUserInfoDisabled}
                     />
                     <Form.Control.Feedback type="invalid">
                       Please provide your zip code
@@ -325,12 +350,90 @@ class Profile extends React.Component {
                   </Form.Group>
                 </Col>
               </Row>
-                
-              {
-                !this.state.disabled &&
-                  <Button block size="lg" type="submit">
+
+              <Row noGutters={true} className="py-3">
+                <Col className="text-left">
+                  <h4>Password</h4>
+                </Col>
+                <Col className="text-right">
+                  <Button 
+                    className={`${this.state.updatePasswordDisabled ? 'light-up-btn' : 'light-up-btn--on'}` }
+                    variant="outline-primary" 
+                    onClick={this.toggleUpdatePassword}
+                  >
                     Update
                   </Button>
+                </Col>
+              </Row>
+              { !this.state.updatePasswordDisabled &&
+                <Row>
+                  <Col sm="10" md="8" lg="7" xl="6">
+                    <Form.Group size="lg" controlId="password">
+                      <Form.Label>Password</Form.Label>
+                      <Form.Control
+                        type="password"
+                        name={'password'}
+                        value={this.state.fields.password.value}
+                        isValid={this.state.validated && this.state.fields.password.isValid}
+                        isInvalid={this.state.validated && !this.state.fields.password.isValid}
+                        onChange={this.handleFieldChange}
+                        disabled={this.state.updatePasswordDisabled}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        Please provide a password that is 3 characters or longer
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  <Col sm="10" md="8" lg="7" xl="6">
+                    <Form.Group size="lg" controlId="passwordRepeat">
+                      <Form.Label>Repeat your password</Form.Label>
+                      <Form.Control
+                        type="password"
+                        name={'passwordRepeat'}
+                        value={this.state.fields.passwordRepeat.value}
+                        isValid={this.state.validated && this.state.fields.passwordRepeat.isValid}
+                        isInvalid={this.state.validated && !this.state.fields.passwordRepeat.isValid}
+                        onChange={this.handleFieldChange}
+                        disabled={this.state.updatePasswordDisabled}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        Please repeat your password
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                </Row>
+              }
+                
+              {
+                (!this.state.updatePasswordDisabled || !this.state.updateUserInfoDisabled) && 
+                  <Row noGutters={true}>
+                    { this.state.conflict ?
+                      <Col>
+                        {/* TODO: this could be a component */}
+                        <Row className="py-2" noGutters={true}>
+                          <Col className="warning-block py-1 px-2">
+                            <b>Conflict detected!</b>
+                            <div>It appears this information was updated elsewhere, you can either fetch the new changes or save the current changes regardless (this might overwrite some information)</div>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col>
+                            <Button block size="lg" variant="info" onClick={this.fetchChanges}>
+                              Fetch changes
+                            </Button>
+                          </Col>
+                          <Col>
+                            <Button block size="lg" type="submit"  variant="warning">
+                              Overwrite
+                            </Button>
+                          </Col>
+                        </Row>
+                      </Col>
+                      : <Button block size="lg" type="submit">
+                        Update
+                      </Button>
+                    }
+                  </Row>
               }
             </Form>
           </Col>
@@ -350,5 +453,4 @@ Profile.propTypes = {
   auth: PropTypes.object.isRequired
 };
 
-// TODO register - updateuserinfo
-export default connect(mapStateToProps, { updateUserInfo })(Profile)
+export default connect(mapStateToProps, { setUserData, setError, showSuccess, getUserInfo })(Profile)
