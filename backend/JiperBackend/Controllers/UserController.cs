@@ -10,7 +10,6 @@ using JiperBackend.Helpers;
 
 namespace JiperBackend.Controllers
 {
-    [LogActionFilter]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
