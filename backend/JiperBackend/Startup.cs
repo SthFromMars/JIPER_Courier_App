@@ -35,6 +35,7 @@ namespace JiperBackend
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddScoped<UserService, UserService>();
             services.AddScoped<CourierCompanyService, CourierCompanyService>();
+            services.AddScoped<ExceptionLogger, ExceptionLogger>();
 
             if (System.Convert.ToBoolean(Configuration.GetSection("Log").Value))
             {
