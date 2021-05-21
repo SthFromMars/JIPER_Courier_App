@@ -11,9 +11,11 @@ namespace JiperBackend.Controllers
     public class CourierCompanyController : ControllerBase
     {
         private readonly CourierCompanyService courierCompanyService;
-        public CourierCompanyController(CourierCompanyService dataLoader)
+        private readonly ExceptionLogger logger;
+        public CourierCompanyController(CourierCompanyService dataLoader, ExceptionLogger logger)
         {
             this.courierCompanyService = dataLoader;
+            this.logger = logger;
         }
 
         [Authorize]
@@ -25,8 +27,9 @@ namespace JiperBackend.Controllers
             {
                 courierCompany = courierCompanyService.GetCourierCompany(id);
             }
-            catch(InvalidOperationException)
-            { 
+            catch(InvalidOperationException ex)
+            {
+                logger.LogException(ex.GetType().Name);
                 return NotFound();
             }
             return Ok(courierCompany);

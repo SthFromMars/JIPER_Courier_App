@@ -30,6 +30,5 @@ namespace JiperBackend.Helpers
                 outputFile.WriteLine(message);
             }
         }
-
     }
 }

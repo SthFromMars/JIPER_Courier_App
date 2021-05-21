@@ -18,11 +18,13 @@ namespace JiperBackend.Controllers
     {
         private readonly UserService userService;
         private readonly IConfiguration configuration;
+        private readonly ExceptionLogger logger;
 
-        public UserController(UserService dataLoader, IConfiguration configuration)
+        public UserController(UserService dataLoader, IConfiguration configuration, ExceptionLogger logger)
         {
             this.userService = dataLoader;
             this.configuration = configuration;
+            this.logger = logger;
         }
 
         [HttpPost("register")]
@@ -40,8 +42,9 @@ namespace JiperBackend.Controllers
                 User user = new User(email, password, firstName, lastName, phoneNumber, address);
                 response = userService.AddUser(user);
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException ex)
             {
+                logger.LogException(ex.GetType().Name);
                 return BadRequest();
             }
             return Ok(response);
@@ -57,12 +60,14 @@ namespace JiperBackend.Controllers
                 string password = data["password"].ToObject<string>();
                 response = userService.Authenticate(email, password);
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException ex)
             {
+                logger.LogException(ex.GetType().Name);
                 return BadRequest();
             }
-            catch (ArgumentNullException)
+            catch (ArgumentNullException ex)
             {
+                logger.LogException(ex.GetType().Name);
                 return NotFound();
             }
             
@@ -102,16 +107,19 @@ namespace JiperBackend.Controllers
                 
                 userService.AddOrder(userId, order);
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException ex)
             {
+                logger.LogException(ex.GetType().Name);
                 return BadRequest();
             }
-            catch (ArgumentNullException)
+            catch (ArgumentNullException ex)
             {
+                logger.LogException(ex.GetType().Name);
                 return NotFound();
             }
-            catch (FormatException)
+            catch (FormatException ex)
             {
+                logger.LogException(ex.GetType().Name);
                 return NotFound();
             }
             return Ok(order);
@@ -127,8 +135,9 @@ namespace JiperBackend.Controllers
                 int userId = ((User)HttpContext.Items["User"]).Id;
                 orders = userService.GetOrders(userId).OrderByDescending(o => o.Date).ToList();
             }
-            catch (ArgumentNullException)
+            catch (ArgumentNullException ex)
             {
+                logger.LogException(ex.GetType().Name);
                 return NotFound();
             }
             return Ok(orders);
@@ -138,19 +147,18 @@ namespace JiperBackend.Controllers
         [HttpGet("orders/{orderId}")]
         public IActionResult GetOrder(int orderId)
         {
-            Order order;
+            Order order = null;
             try
             {
                 int userId = ((User)HttpContext.Items["User"]).Id;
                 order = userService.GetOrder(userId, orderId);
             }
-            catch (ArgumentNullException)
-            {
-                return NotFound();
-            }
-            catch (InvalidOperationException)
-            {
-                return NotFound();
+            catch (Exception ex) {
+                if (ex is ArgumentNullException || ex is InvalidOperationException)
+                {
+                    logger.LogException(ex.GetType().Name);
+                    return NotFound();
+                }
             }
             return Ok(order);
         }
@@ -172,13 +180,12 @@ namespace JiperBackend.Controllers
                 {
                     overwrite = data["overwrite"].ToObject<bool>();
                 }
-                if((userVersion != user.xmin || addressVersion != user.Address.xmin) && overwrite == false)
+                if ((userVersion != user.xmin || addressVersion != user.Address.xmin) && overwrite == false)
                 {
                     return Conflict("OPTIMISTIC_LOCK_ERROR");
                 }
 
-
-               if (data.ContainsKey("password")) // Password may not be sent if it is not being changed
+                if (data.ContainsKey("password")) // Password may not be sent if it is not being changed
                 {
                     user.Password = data["password"].ToObject<string>();
                 }
@@ -194,16 +201,19 @@ namespace JiperBackend.Controllers
                 user.Address.ZipCode = address.ZipCode;
                 userService.SaveChanges();
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException ex)
             {
+                logger.LogException(ex.GetType().Name);
                 return BadRequest();
             }
-            catch (ArgumentNullException)
+            catch (ArgumentNullException ex)
             {
+                logger.LogException(ex.GetType().Name);
                 return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
+                logger.LogException(ex.GetType().Name);
                 return Conflict("OPTIMISTIC_LOCK_ERROR");
             }
             return Ok(user);
@@ -218,15 +228,16 @@ namespace JiperBackend.Controllers
                 int userId = ((User)HttpContext.Items["User"]).Id;
                 user = userService.GetUser(userId) ?? throw new ArgumentNullException();
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException ex)
             {
+                logger.LogException(ex.GetType().Name);
                 return BadRequest();
             }
-            catch (ArgumentNullException)
+            catch (ArgumentNullException ex)
             {
+                logger.LogException(ex.GetType().Name);
                 return NotFound();
             }
-
             return Ok(user);
         }
     }
