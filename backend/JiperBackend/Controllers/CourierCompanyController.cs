@@ -29,7 +29,7 @@ namespace JiperBackend.Controllers
             }
             catch(InvalidOperationException ex)
             {
-                logger.LogException(ex.GetType().Name);
+                logger.LogException(ex);
                 return NotFound();
             }
             return Ok(courierCompany);

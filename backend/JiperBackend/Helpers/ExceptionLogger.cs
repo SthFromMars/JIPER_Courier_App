@@ -13,16 +13,17 @@ namespace JiperBackend.Helpers
             configuration = con;
         }
 
-        public void LogException(string exception)
+        public void LogException(Exception ex)
         {
             if (configuration.GetValue<bool>("Log") == false)
             {
                 return;
             }
-            var message = String.Format("ERROR in last call: {0}", exception);
+            var message = String.Format("ERROR in last call: {0}", ex.GetType().Name);
             using (StreamWriter outputFile = new StreamWriter("log.txt", true))
             {
                 outputFile.WriteLine(message);
+                outputFile.WriteLine(ex.StackTrace);
             }
         }
     }
