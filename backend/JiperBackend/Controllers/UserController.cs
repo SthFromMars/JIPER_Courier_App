@@ -44,7 +44,7 @@ namespace JiperBackend.Controllers
             }
             catch (NullReferenceException ex)
             {
-                logger.LogException(ex.GetType().Name);
+                logger.LogException(ex);
                 return BadRequest();
             }
             return Ok(response);
@@ -62,12 +62,12 @@ namespace JiperBackend.Controllers
             }
             catch (NullReferenceException ex)
             {
-                logger.LogException(ex.GetType().Name);
+                logger.LogException(ex);
                 return BadRequest();
             }
             catch (ArgumentNullException ex)
             {
-                logger.LogException(ex.GetType().Name);
+                logger.LogException(ex);
                 return NotFound();
             }
             
@@ -109,17 +109,17 @@ namespace JiperBackend.Controllers
             }
             catch (NullReferenceException ex)
             {
-                logger.LogException(ex.GetType().Name);
+                logger.LogException(ex);
                 return BadRequest();
             }
             catch (ArgumentNullException ex)
             {
-                logger.LogException(ex.GetType().Name);
+                logger.LogException(ex);
                 return NotFound();
             }
             catch (FormatException ex)
             {
-                logger.LogException(ex.GetType().Name);
+                logger.LogException(ex);
                 return NotFound();
             }
             return Ok(order);
@@ -137,7 +137,7 @@ namespace JiperBackend.Controllers
             }
             catch (ArgumentNullException ex)
             {
-                logger.LogException(ex.GetType().Name);
+                logger.LogException(ex);
                 return NotFound();
             }
             return Ok(orders);
@@ -156,7 +156,7 @@ namespace JiperBackend.Controllers
             catch (Exception ex) {
                 if (ex is ArgumentNullException || ex is InvalidOperationException)
                 {
-                    logger.LogException(ex.GetType().Name);
+                    logger.LogException(ex);
                     return NotFound();
                 }
             }
@@ -203,17 +203,17 @@ namespace JiperBackend.Controllers
             }
             catch (NullReferenceException ex)
             {
-                logger.LogException(ex.GetType().Name);
+                logger.LogException(ex);
                 return BadRequest();
             }
             catch (ArgumentNullException ex)
             {
-                logger.LogException(ex.GetType().Name);
+                logger.LogException(ex);
                 return NotFound();
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                logger.LogException(ex.GetType().Name);
+                logger.LogException(ex);
                 return Conflict("OPTIMISTIC_LOCK_ERROR");
             }
             return Ok(user);
@@ -230,12 +230,12 @@ namespace JiperBackend.Controllers
             }
             catch (NullReferenceException ex)
             {
-                logger.LogException(ex.GetType().Name);
+                logger.LogException(ex);
                 return BadRequest();
             }
             catch (ArgumentNullException ex)
             {
-                logger.LogException(ex.GetType().Name);
+                logger.LogException(ex);
                 return NotFound();
             }
             return Ok(user);
